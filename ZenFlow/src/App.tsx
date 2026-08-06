@@ -1,12 +1,22 @@
 import { useState, useEffect } from 'react';
-import { Sparkles } from 'lucide-react';
+import { Sparkles, Quote, RefreshCw } from 'lucide-react';
 import { PomodoroTimer } from './components/PomodoroTimer';
 import { TaskManager } from './components/TaskManager';
 import { HabitTracker } from './components/HabitTracker';
 import { CompletionCalendar, ActivityHistoryRecord } from './components/CompletionCalendar';
 
+const MOTIVATION_QUOTES = [
+  "Discipline equals freedom.",
+  "Focus on progress, not perfection.",
+  "Small daily wins compound into greatness.",
+  "Your future self will thank you for today's effort.",
+  "Deep work creates extraordinary results.",
+  "Stay hungry, stay consistent.",
+];
+
 export default function App() {
   const todayStr = new Date().toISOString().split('T')[0];
+  const [quoteIndex, setQuoteIndex] = useState<number>(0);
 
   const [completedHistory, setCompletedHistory] = useState<Record<string, ActivityHistoryRecord>>(() => {
     try {
@@ -40,6 +50,10 @@ export default function App() {
       console.error('Failed to save history to localStorage', e);
     }
   }, [completedHistory]);
+
+  const rotateQuote = () => {
+    setQuoteIndex((prev) => (prev + 1) % MOTIVATION_QUOTES.length);
+  };
 
   const handleItemCompleted = (itemTitle: string) => {
     setCompletedHistory((prev) => {
@@ -93,9 +107,31 @@ export default function App() {
             </p>
           </div>
         </div>
-        <span style={{ fontSize: '0.8rem', padding: '0.3rem 0.8rem', background: 'rgba(168, 85, 247, 0.15)', color: '#c084fc', border: '1px solid rgba(168, 85, 247, 0.3)', borderRadius: '9999px', fontWeight: 600 }}>
-          Week 3 AI React Build
-        </span>
+
+        {/* Short Motivational Quote Pill */}
+        <div
+          onClick={rotateQuote}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.5rem',
+            background: 'rgba(168, 85, 247, 0.12)',
+            border: '1px solid rgba(168, 85, 247, 0.3)',
+            borderRadius: '9999px',
+            padding: '0.4rem 0.9rem',
+            color: '#e9d5ff',
+            fontSize: '0.82rem',
+            fontWeight: 600,
+            cursor: 'pointer',
+            boxShadow: '0 4px 12px rgba(168, 85, 247, 0.15)',
+            maxWidth: '380px',
+          }}
+          title="Click to rotate motivation quote"
+        >
+          <Quote size={14} color="#c084fc" />
+          <span>&quot;{MOTIVATION_QUOTES[quoteIndex]}&quot;</span>
+          <RefreshCw size={12} color="#94a3b8" style={{ opacity: 0.7 }} />
+        </div>
       </header>
 
       <div className="main-grid">

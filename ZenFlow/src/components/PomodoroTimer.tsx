@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Play, Pause, RotateCcw, Bell } from 'lucide-react';
+import { Play, Pause, RotateCcw, Bell, Zap } from 'lucide-react';
 
 export type TimerMode = 'focus' | 'shortBreak' | 'longBreak';
 
@@ -18,9 +18,10 @@ export const PomodoroTimer: React.FC<PomodoroTimerProps> = ({ onSessionComplete 
   const [timeLeft, setTimeLeft] = useState<number>(MODE_DURATIONS.focus);
   const [isRunning, setIsRunning] = useState<boolean>(false);
   const [completedSessions, setCompletedSessions] = useState<number>(0);
+  const [customMinutes, setCustomMinutes] = useState<string>('');
+
   const audioCtxRef = useRef<AudioContext | null>(null);
 
-  // Play real audio chime when session completes using Web Audio API oscillator
   const playAlarmChime = () => {
     try {
       if (!audioCtxRef.current) {
@@ -33,8 +34,8 @@ export const PomodoroTimer: React.FC<PomodoroTimerProps> = ({ onSessionComplete 
       const gain = ctx.createGain();
 
       osc.type = 'sine';
-      osc.frequency.setValueAtTime(587.33, ctx.currentTime); // D5 note
-      osc.frequency.setValueAtTime(880, ctx.currentTime + 0.15); // A5 note
+      osc.frequency.setValueAtTime(587.33, ctx.currentTime);
+      osc.frequency.setValueAtTime(880, ctx.currentTime + 0.15);
 
       gain.gain.setValueAtTime(0.3, ctx.currentTime);
       gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 1.2);
@@ -49,7 +50,6 @@ export const PomodoroTimer: React.FC<PomodoroTimerProps> = ({ onSessionComplete 
     }
   };
 
-  // Timer tick effect with cleanup
   useEffect(() => {
     let interval: NodeJS.Timeout | null = null;
 
@@ -77,6 +77,21 @@ export const PomodoroTimer: React.FC<PomodoroTimerProps> = ({ onSessionComplete 
     setIsRunning(false);
   };
 
+  const handleQuickPreset = (mins: number) => {
+    setTimeLeft(mins * 60);
+    setIsRunning(false);
+  };
+
+  const handleCustomSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const mins = parseInt(customMinutes, 10);
+    if (!isNaN(mins) && mins > 0 && mins <= 180) {
+      setTimeLeft(mins * 60);
+      setIsRunning(false);
+      setCustomMinutes('');
+    }
+  };
+
   const toggleTimer = () => {
     setIsRunning((prev) => !prev);
   };
@@ -94,7 +109,7 @@ export const PomodoroTimer: React.FC<PomodoroTimerProps> = ({ onSessionComplete 
 
   return (
     <div className="card" role="region" aria-label="Pomodoro Focus Timer">
-      <div className="mode-pills" role="tablist" aria-label="Timer Mode Switcher">
+      <div className="mode-pills" role="tablist" aria-label="Timer Mode Switcher" style={{ marginBottom: '1rem' }}>
         <button
           role="tab"
           aria-selected={mode === 'focus'}
@@ -121,6 +136,71 @@ export const PomodoroTimer: React.FC<PomodoroTimerProps> = ({ onSessionComplete 
         </button>
       </div>
 
+      {/* Prominent Quick Presets + Custom Mins Input in One Single Row */}
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', flexWrap: 'wrap', marginBottom: '0.5rem' }}>
+        <span style={{ fontSize: '0.85rem', color: '#94a3b8', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+          <Zap size={14} color="#f59e0b" /> Quick:
+        </span>
+
+        {[10, 25, 45, 60].map((m) => (
+          <button
+            key={m}
+            onClick={() => handleQuickPreset(m)}
+            style={{
+              background: 'rgba(255, 255, 255, 0.08)',
+              border: '1px solid rgba(255, 255, 255, 0.12)',
+              color: '#e2e8f0',
+              borderRadius: '8px',
+              padding: '0.35rem 0.75rem',
+              fontSize: '0.85rem',
+              cursor: 'pointer',
+              fontWeight: 700,
+              transition: 'all 0.2s ease',
+            }}
+          >
+            {m}m
+          </button>
+        ))}
+
+        <form onSubmit={handleCustomSubmit} style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+          <input
+            type="number"
+            min="1"
+            max="180"
+            value={customMinutes}
+            onChange={(e) => setCustomMinutes(e.target.value)}
+            placeholder="Custom m"
+            style={{
+              width: '85px',
+              padding: '0.35rem 0.6rem',
+              borderRadius: '8px',
+              background: 'rgba(15, 23, 42, 0.7)',
+              border: '1px solid rgba(168, 85, 247, 0.4)',
+              color: '#c084fc',
+              fontSize: '0.85rem',
+              fontWeight: 600,
+              outline: 'none',
+            }}
+            aria-label="Custom duration in minutes"
+          />
+          <button
+            type="submit"
+            style={{
+              background: '#6366f1',
+              color: 'white',
+              border: 'none',
+              borderRadius: '8px',
+              padding: '0.35rem 0.65rem',
+              fontSize: '0.8rem',
+              fontWeight: 700,
+              cursor: 'pointer',
+            }}
+          >
+            Set
+          </button>
+        </form>
+      </div>
+
       <div className="timer-display" aria-live="off" aria-label={`Time remaining: ${formatTime(timeLeft)}`}>
         {formatTime(timeLeft)}
       </div>
@@ -144,7 +224,7 @@ export const PomodoroTimer: React.FC<PomodoroTimerProps> = ({ onSessionComplete 
         </button>
       </div>
 
-      <div style={{ marginTop: '1.5rem', textAlign: 'center', fontSize: '0.85rem', color: '#94a3b8', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
+      <div style={{ marginTop: 'auto', textAlign: 'center', fontSize: '0.85rem', color: '#94a3b8', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', paddingTop: '0.75rem' }}>
         <Bell size={14} color="#a855f7" /> Completed Sessions Today: <strong style={{ color: '#a855f7' }}>{completedSessions}</strong>
       </div>
     </div>
