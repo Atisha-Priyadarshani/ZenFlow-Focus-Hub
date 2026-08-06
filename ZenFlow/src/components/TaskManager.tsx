@@ -64,7 +64,7 @@ export const TaskManager: React.FC = () => {
   };
 
   return (
-    <div className="card" role="region" aria-label="Study Tasks Manager" style={{ display: 'flex', flexDirection: 'column', maxHeight: '560px' }}>
+    <div className="card card-scrollable" role="region" aria-label="Study Tasks Manager">
       <h3 style={{ margin: '0 0 1rem 0', fontSize: '1.2rem', color: '#f8fafc' }}>Focus Objectives</h3>
 
       <form onSubmit={addTask} style={{ display: 'flex', gap: '0.5rem', marginBottom: '1.25rem' }}>
@@ -107,21 +107,9 @@ export const TaskManager: React.FC = () => {
 
       {/* Delete Confirmation Banner */}
       {taskToDelete && (
-        <div
-          style={{
-            background: 'rgba(239, 68, 68, 0.15)',
-            border: '1px solid rgba(239, 68, 68, 0.3)',
-            borderRadius: '12px',
-            padding: '0.85rem 1rem',
-            marginBottom: '1rem',
-            display: 'flex',
-            alignItems: 'center',
-            justify-content: 'space-between',
-          }}
-          role="alert"
-        >
+        <div className="delete-banner" role="alert">
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.85rem', color: '#f87171' }}>
-            <AlertTriangle size={18} /> Delete "{taskToDelete.title.slice(0, 20)}..."?
+            <AlertTriangle size={18} /> Delete task: {taskToDelete.title.slice(0, 20)}?
           </div>
           <div style={{ display: 'flex', gap: '0.5rem' }}>
             <button
@@ -141,7 +129,7 @@ export const TaskManager: React.FC = () => {
       )}
 
       {/* Fixed Container Height + Internal Scrollable Task List */}
-      <div style={{ flex: 1, overflowY: 'auto', paddingRight: '0.25rem' }}>
+      <div className="scrollable-list">
         {tasks.length === 0 ? (
           <p style={{ textAlign: 'center', color: '#94a3b8', fontSize: '0.9rem', padding: '1rem 0' }}>
             No tasks added yet. Stay focused and add your first objective!

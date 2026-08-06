@@ -1,8 +1,8 @@
-import React from 'react';
 import { Sparkles } from 'lucide-react';
 import { PomodoroTimer } from './components/PomodoroTimer';
 import { TaskManager } from './components/TaskManager';
-import { SoundscapePlayer } from './components/SoundscapePlayer';
+import { HabitTracker } from './components/HabitTracker';
+import { CompletionCalendar } from './components/CompletionCalendar';
 
 export default function App() {
   return (
@@ -25,10 +25,11 @@ export default function App() {
       <div className="main-grid">
         <div>
           <PomodoroTimer />
-          <SoundscapePlayer />
+          <HabitTracker />
         </div>
         <div>
           <TaskManager />
+          <CompletionCalendar />
         </div>
       </div>
     </div>

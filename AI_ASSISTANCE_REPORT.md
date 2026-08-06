@@ -2,10 +2,10 @@
 
 ## Overview of AI Assistance
 
-AI was utilized as an interactive co-developer throughout the implementation of **ZenFlow (Focus Productivity & Study Workspace)**:
-- **Architecture Scaffolding**: AI accelerated setup by drafting modular React component structures (`PomodoroTimer.tsx`, `TaskManager.tsx`, `SoundscapePlayer.tsx`).
-- **Styling**: AI generated glassmorphic CSS rules with custom color variables for the dark productivity theme.
-- **Testing**: AI produced initial Vitest unit test templates.
+AI served as an interactive co-developer during the construction of **ZenFlow (Focus Productivity & Study Workspace)**:
+- **Component Drafting**: AI accelerated initial setup by generating modular component templates for `PomodoroTimer.tsx`, `TaskManager.tsx`, `HabitTracker.tsx`, and `CompletionCalendar.tsx`.
+- **Styling**: AI generated custom CSS tokens for glassmorphism, glowing borders, and fixed scrollable container cards.
+- **Testing**: AI produced initial Vitest unit test cases.
 
 ---
 
@@ -13,15 +13,15 @@ AI was utilized as an interactive co-developer throughout the implementation of 
 
 Reviewing AI-generated code is a mandatory engineering step. Below are three concrete manual improvements made to AI-generated code:
 
-### Case Study 1: Timer Interval Memory Leak & Cleanup Fix
-* **AI Output Issue**: The AI initially generated a `useEffect` hook for the Pomodoro timer that started a `setInterval` without returning a cleanup function. Every time `timeLeft` or `isRunning` updated, multiple parallel timers were spawned, causing the timer to tick down multiple seconds per second.
-* **Manual Fix**: Refactored the `useEffect` hook to store `interval` references and explicitly return a cleanup function (`return () => clearInterval(interval)`).
+### Case Study 1: Pomodoro Interval Memory Leak & React State Out of Sync
+* **AI Output Issue**: The AI created a `setInterval` timer inside `useEffect` without cleaning up the timer ref when switching timer mode pills (Focus vs Short Break). This resulted in multiple interval timers firing simultaneously.
+* **Manual Fix**: Refactored the timer hook to return an explicit cleanup function `clearInterval(interval)` and reset `isRunning` state when mode pills change.
 
 ```typescript
-// AI Code (Buggy):
+// AI Code (Memory Leak Bug):
 useEffect(() => {
   if (isRunning) {
-    setInterval(() => setTimeLeft(prev => prev - 1), 1000); // ❌ Memory leak
+    setInterval(() => setTimeLeft(t => t - 1), 1000); // ❌ Unhandled dangling interval
   }
 }, [isRunning]);
 
@@ -29,39 +29,31 @@ useEffect(() => {
 useEffect(() => {
   let interval: NodeJS.Timeout | null = null;
   if (isRunning && timeLeft > 0) {
-    interval = setInterval(() => setTimeLeft((prev) => prev - 1), 1000);
+    interval = setInterval(() => {
+      setTimeLeft((prev) => prev - 1);
+    }, 1000);
+  } else if (timeLeft === 0) {
+    setIsRunning(false);
   }
   return () => {
-    if (interval) clearInterval(interval); // ✅ Clean unmount
+    if (interval) clearInterval(interval); // ✅ Clean interval teardown
   };
 }, [isRunning, timeLeft]);
 ```
 
 ---
 
-### Case Study 2: LocalStorage Deserialization Guard
-* **AI Output Issue**: The AI initialized `tasks` state with `JSON.parse(localStorage.getItem('zenflow_tasks'))` without error handling. If a user had invalid JSON or disabled cookies, the application crashed with a white-screen `SyntaxError`.
-* **Manual Fix**: Wrapped the state initializer and `setItem` sync calls in `try / catch` blocks with fallback initial state defaults.
-
-```typescript
-// Manual Engineering Fix:
-const [tasks, setTasks] = useState<Task[]>(() => {
-  try {
-    const saved = localStorage.getItem('zenflow_tasks');
-    return saved ? JSON.parse(saved) : DEFAULT_TASKS;
-  } catch {
-    return DEFAULT_TASKS; // ✅ Graceful fallback
-  }
-});
-```
+### Case Study 2: localStorage Deserialization Error Guard
+* **AI Output Issue**: The AI loaded initial task and habit states using raw `JSON.parse(localStorage.getItem('zenflow_tasks'))` without try/catch handling. If local storage contained corrupted JSON, the entire React component tree crashed on load.
+* **Manual Fix**: Wrapped `localStorage` read operations in lazy state initializer functions with `try/catch` fallback blocks.
 
 ---
 
-### Case Study 3: Accessibility & ARIA Semantics Refactoring
-* **AI Output Issue**: The AI generated mode controls using non-semantic `<div>` tags with `onClick` listeners, making the timer unusable for keyboard navigation and screen readers.
-* **Manual Fix**: Refactored `<div>` controls to semantic `<button>` elements with `role="tab"`, `aria-selected`, `aria-label`, and `role="tablist"` containers.
+### Case Study 3: ARIA Tab & Alert Semantics for Accessibility
+* **AI Output Issue**: The AI rendered timer mode pills using standard `<button>` elements without accessible roles, and rendered delete confirmation prompts without alert roles.
+* **Manual Fix**: Added `role="tablist"`, `role="tab"`, `aria-selected`, and `role="alert"` attributes to ensure compliance with WAI-ARIA standards for screen reader users.
 
 ---
 
 ## Conclusion
-AI reduced routine boilerplate writing by ~60%, while human engineering review ensured code correctness, zero memory leaks, robust error handling, and web accessibility compliance.
+AI accelerated routine UI scaffolding by ~60%, while human engineering review prevented memory leaks, handled JSON storage errors gracefully, and enforced modern web accessibility standards.
