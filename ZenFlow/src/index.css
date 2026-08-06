@@ -15,29 +15,33 @@ body.dark-mode {
   --border-app: rgba(244, 114, 182, 0.18);
   --border-card: rgba(244, 114, 182, 0.14);
   --text-main: #fff1f2;
-  --text-muted: #fda4af;
-  --text-dim: #9f7596;
+  --text-muted: #f472b6;
+  --text-dim: #fda4af;
   --shadow-app: 0 30px 60px -15px rgba(18, 10, 20, 0.9);
   --pill-active-bg: linear-gradient(135deg, #f472b6, #ec4899);
   --badge-bg: rgba(244, 114, 182, 0.15);
   --badge-text: #fbcfe8;
+  --accent-color: #f472b6;
+  --sub-panel-bg: rgba(20, 10, 25, 0.5);
 }
 
-/* Light Cherry Blossom Mode Variables */
+/* Light Cherry Blossom Mode Variables - 100% High Contrast & Readable */
 body.light-mode {
   --bg-page: radial-gradient(circle at 50% 0%, #fce7f3 0%, #fff1f2 60%, #fff5f7 100%);
-  --bg-app: rgba(255, 255, 255, 0.85);
-  --bg-card: rgba(253, 242, 248, 0.7);
-  --bg-input: rgba(255, 255, 255, 0.9);
-  --border-app: rgba(244, 114, 182, 0.25);
-  --border-card: rgba(244, 114, 182, 0.2);
-  --text-main: #831843;
+  --bg-app: rgba(255, 255, 255, 0.9);
+  --bg-card: #ffffff;
+  --bg-input: #fdf2f8;
+  --border-app: rgba(236, 72, 153, 0.25);
+  --border-card: rgba(236, 72, 153, 0.18);
+  --text-main: #701a75;
   --text-muted: #be185d;
   --text-dim: #9d174d;
   --shadow-app: 0 20px 40px -10px rgba(236, 72, 153, 0.15);
   --pill-active-bg: linear-gradient(135deg, #ec4899, #db2777);
-  --badge-bg: rgba(244, 114, 182, 0.2);
-  --badge-text: #9d174d;
+  --badge-bg: rgba(236, 72, 153, 0.12);
+  --badge-text: #831843;
+  --accent-color: #db2777;
+  --sub-panel-bg: #fdf2f8;
 }
 
 * {
@@ -135,8 +139,8 @@ body.dark-mode .logo-title {
 }
 
 .card:hover {
-  border-color: rgba(244, 114, 182, 0.35);
-  box-shadow: 0 12px 30px -10px rgba(244, 114, 182, 0.2);
+  border-color: var(--accent-color);
+  box-shadow: 0 12px 30px -10px rgba(236, 72, 153, 0.2);
 }
 
 .scrollable-list {
@@ -151,7 +155,7 @@ body.dark-mode .logo-title {
 }
 
 .scrollable-list::-webkit-scrollbar-thumb {
-  background: rgba(244, 114, 182, 0.25);
+  background: rgba(236, 72, 153, 0.25);
   border-radius: 4px;
 }
 
@@ -175,7 +179,7 @@ body.dark-mode .logo-title {
   margin: 1.25rem 0;
   letter-spacing: -0.04em;
   color: var(--text-main);
-  text-shadow: 0 0 30px rgba(244, 114, 182, 0.25);
+  text-shadow: 0 0 30px rgba(236, 72, 153, 0.2);
 }
 
 .timer-controls {
@@ -215,7 +219,7 @@ body.dark-mode .logo-title {
 }
 
 .btn-secondary:hover {
-  background: rgba(244, 114, 182, 0.25);
+  background: rgba(236, 72, 153, 0.25);
 }
 
 .mode-pills {
@@ -231,7 +235,7 @@ body.dark-mode .logo-title {
 .mode-pill {
   background: transparent;
   border: none;
-  color: var(--text-muted);
+  color: var(--text-dim);
   padding: 0.45rem 0.85rem;
   border-radius: 8px;
   font-weight: 700;
@@ -259,23 +263,23 @@ body.dark-mode .logo-title {
 }
 
 .task-item:hover {
-  border-color: rgba(244, 114, 182, 0.35);
+  border-color: var(--accent-color);
 }
 
 .task-completed {
   text-decoration: line-through;
   color: var(--text-dim);
+  opacity: 0.7;
 }
 
 /* Cherry Blossom Today's Date Pill */
 .day-pill-today {
   background: var(--pill-active-bg) !important;
   color: #ffffff !important;
-  border: 1px solid #fbcfe8 !important;
-  box-shadow: 0 0 12px rgba(244, 114, 182, 0.45) !important;
+  border: 1px solid var(--accent-color) !important;
+  box-shadow: 0 0 12px rgba(236, 72, 153, 0.45) !important;
 }
 
-/* Form Inputs 100% Theme Consistent */
 input, select {
   font-family: inherit;
 }

@@ -10,13 +10,6 @@ export interface Habit {
   lastCompletedDate?: string;
 }
 
-const BORDER_COMPLETED = '1px solid rgba(16, 185, 129, 0.3)';
-const BORDER_DEFAULT = '1px solid rgba(255, 255, 255, 0.05)';
-const COLOR_COMPLETED = '#64748b';
-const COLOR_DEFAULT = '#f8fafc';
-const BG_COMPLETED = '#10b981';
-const BG_DEFAULT = 'rgba(255, 255, 255, 0.1)';
-
 interface HabitRowProps {
   habit: Habit;
   onToggle: () => void;
@@ -24,13 +17,8 @@ interface HabitRowProps {
 }
 
 const HabitRow: React.FC<HabitRowProps> = ({ habit, onToggle, onDelete }) => {
-  const borderStyle = habit.completedToday ? BORDER_COMPLETED : BORDER_DEFAULT;
-  const titleColor = habit.completedToday ? COLOR_COMPLETED : COLOR_DEFAULT;
-  const titleDecoration = habit.completedToday ? 'line-through' : 'none';
-  const btnBg = habit.completedToday ? BG_COMPLETED : BG_DEFAULT;
-
   return (
-    <div className="task-item" style={{ border: borderStyle }}>
+    <div className="task-item">
       <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flex: 1 }}>
         <button
           onClick={onToggle}
@@ -39,7 +27,7 @@ const HabitRow: React.FC<HabitRowProps> = ({ habit, onToggle, onDelete }) => {
             height: '28px',
             borderRadius: '8px',
             border: 'none',
-            background: btnBg,
+            background: habit.completedToday ? 'var(--accent-color)' : 'var(--badge-bg)',
             color: 'white',
             display: 'flex',
             alignItems: 'center',
@@ -51,10 +39,17 @@ const HabitRow: React.FC<HabitRowProps> = ({ habit, onToggle, onDelete }) => {
           {habit.completedToday ? <Check size={18} /> : null}
         </button>
         <div>
-          <div style={{ fontWeight: 600, fontSize: '0.9rem', color: titleColor, textDecoration: titleDecoration }}>
+          <div
+            style={{
+              fontWeight: 600,
+              fontSize: '0.9rem',
+              color: habit.completedToday ? 'var(--text-dim)' : 'var(--text-main)',
+              textDecoration: habit.completedToday ? 'line-through' : 'none',
+            }}
+          >
             {habit.name}
           </div>
-          <div style={{ fontSize: '0.75rem', color: '#94a3b8' }}>{habit.info}</div>
+          <div style={{ fontSize: '0.75rem', color: 'var(--text-dim)' }}>{habit.info}</div>
         </div>
       </div>
 
@@ -153,11 +148,11 @@ export const HabitTracker: React.FC<HabitTrackerProps> = ({ onHabitCompleted }) 
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.85rem' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
           <Flame size={20} color="#f59e0b" />
-          <h3 style={{ margin: 0, fontSize: '1.15rem', color: '#f8fafc' }}>Daily Habits &amp; Streaks</h3>
+          <h3 style={{ margin: 0, fontSize: '1.15rem', color: 'var(--text-main)', fontWeight: 700 }}>Daily Habits &amp; Streaks</h3>
         </div>
         <button
           onClick={() => setIsAdding(!isAdding)}
-          style={{ background: 'rgba(168, 85, 247, 0.2)', border: '1px solid rgba(168, 85, 247, 0.4)', color: '#c084fc', borderRadius: '8px', padding: '0.35rem 0.65rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.35rem', fontWeight: 600, fontSize: '0.8rem' }}
+          style={{ background: 'var(--badge-bg)', border: '1px solid var(--border-card)', color: 'var(--text-main)', borderRadius: '8px', padding: '0.35rem 0.65rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.35rem', fontWeight: 600, fontSize: '0.8rem' }}
           aria-label="Add Habit"
         >
           <Plus size={15} /> {isAdding ? 'Close' : 'Add Habit'}
@@ -165,13 +160,13 @@ export const HabitTracker: React.FC<HabitTrackerProps> = ({ onHabitCompleted }) 
       </div>
 
       {isAdding && (
-        <form onSubmit={handleAddHabit} style={{ background: 'rgba(15, 23, 42, 0.7)', border: '1px solid rgba(168, 85, 247, 0.3)', borderRadius: '12px', padding: '0.85rem', marginBottom: '0.75rem' }}>
+        <form onSubmit={handleAddHabit} style={{ background: 'var(--bg-input)', border: '1px solid var(--border-card)', borderRadius: '12px', padding: '0.85rem', marginBottom: '0.75rem' }}>
           <input
             type="text"
             placeholder="Habit Name (e.g. Daily LeetCode Problem)"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            style={{ width: '100%', padding: '0.5rem 0.75rem', borderRadius: '8px', background: 'rgba(30, 41, 59, 0.8)', border: '1px solid rgba(255, 255, 255, 0.1)', color: 'white', marginBottom: '0.5rem', boxSizing: 'border-box' }}
+            style={{ width: '100%', padding: '0.5rem 0.75rem', borderRadius: '8px', background: 'var(--bg-card)', border: '1px solid var(--border-card)', color: 'var(--text-main)', marginBottom: '0.5rem', boxSizing: 'border-box' }}
             aria-label="Habit Name"
           />
           <input
@@ -179,7 +174,7 @@ export const HabitTracker: React.FC<HabitTrackerProps> = ({ onHabitCompleted }) 
             placeholder="Extra Info / Target (e.g. 30 mins / 1 problem)"
             value={info}
             onChange={(e) => setInfo(e.target.value)}
-            style={{ width: '100%', padding: '0.5rem 0.75rem', borderRadius: '8px', background: 'rgba(30, 41, 59, 0.8)', border: '1px solid rgba(255, 255, 255, 0.1)', color: 'white', marginBottom: '0.65rem', boxSizing: 'border-box' }}
+            style={{ width: '100%', padding: '0.5rem 0.75rem', borderRadius: '8px', background: 'var(--bg-card)', border: '1px solid var(--border-card)', color: 'var(--text-main)', marginBottom: '0.65rem', boxSizing: 'border-box' }}
             aria-label="Habit Info"
           />
           <button type="submit" className="btn btn-primary" style={{ width: '100%', padding: '0.45rem', justifyContent: 'center' }}>
@@ -190,7 +185,7 @@ export const HabitTracker: React.FC<HabitTrackerProps> = ({ onHabitCompleted }) 
 
       <div className="scrollable-list">
         {habits.length === 0 ? (
-          <p style={{ textAlign: 'center', color: '#94a3b8', fontSize: '0.85rem', padding: '1rem 0' }}>
+          <p style={{ textAlign: 'center', color: 'var(--text-dim)', fontSize: '0.85rem', padding: '1rem 0' }}>
             No habits added yet. Click &quot;Add Habit&quot; to build your daily streak!
           </p>
         ) : (
