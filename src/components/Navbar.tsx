@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Flower2, Quote, RefreshCw, Sun, Moon, LayoutDashboard, CheckSquare, Flame, Calendar, Activity, Palette } from 'lucide-react';
+import { Flower2, Quote, RefreshCw, Sun, Moon, LayoutDashboard, CheckSquare, Flame, Calendar, Activity, Palette, Sliders } from 'lucide-react';
 
 const MOTIVATION_QUOTES = [
   "Discipline equals freedom.",
@@ -45,6 +45,7 @@ export function Navbar() {
     { href: '/history', label: 'History', icon: Calendar },
     { href: '/health', label: 'Health', icon: Activity },
     { href: '/identity-kit', label: 'Identity Kit', icon: Palette },
+    { href: '/curation', label: 'Curation', icon: Sliders },
   ];
 
   return (

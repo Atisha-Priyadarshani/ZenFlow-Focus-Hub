@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kill Your Darlings: Image Curation Report — Atisha Priyadarshani</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-page: #120A14;
+      --bg-card: rgba(40, 20, 48, 0.6);
+      --border-card: rgba(244, 114, 182, 0.2);
+      --text-main: #FFF1F2;
+      --text-muted: #F472B6;
+      --accent: #EC4899;
+      --badge-bg: rgba(244, 114, 182, 0.15);
+      --red-bg: rgba(239, 68, 68, 0.15);
+      --red-border: rgba(239, 68, 68, 0.3);
+      --green-bg: rgba(16, 185, 129, 0.15);
+      --green-border: rgba(16, 185, 129, 0.3);
+    }
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: radial-gradient(circle at 50% -10%, #3b163e 0%, #1a0c1e 50%, #120a14 85%);
+      color: var(--text-main);
+      margin: 0;
+      padding: 2.5rem 1.5rem;
+      min-height: 100vh;
+      box-sizing: border-box;
+    }
+    .container {
+      max-width: 860px;
+      margin: 0 auto;
+      background: rgba(25, 12, 30, 0.9);
+      border: 1px solid var(--border-card);
+      border-radius: 24px;
+      padding: 2.5rem;
+      box-shadow: 0 30px 60px rgba(0,0,0,0.6);
+      backdrop-filter: blur(12px);
+    }
+    .badge {
+      display: inline-block;
+      background: var(--badge-bg);
+      border: 1px solid var(--border-card);
+      color: var(--text-muted);
+      font-size: 0.75rem;
+      font-weight: 800;
+      padding: 0.35rem 0.85rem;
+      border-radius: 9999px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    h1 {
+      font-size: 2.2rem;
+      font-weight: 800;
+      margin: 0.75rem 0 0.25rem 0;
+      background: linear-gradient(135deg, #fbcfe8, #f472b6, #ec4899);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .subtitle {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      font-weight: 600;
+      margin-bottom: 2rem;
+      border-bottom: 1px solid var(--border-card);
+      padding-bottom: 1.5rem;
+    }
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-card);
+      border-radius: 16px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    .card-title {
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: var(--text-muted);
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+      text-align: left;
+    }
+    th, td {
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--border-card);
+    }
+    th {
+      color: var(--text-muted);
+      font-weight: 800;
+      text-transform: uppercase;
+      font-size: 0.75rem;
+      background: rgba(20,10,25,0.4);
+    }
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+    }
+    .img-box {
+      border: 1px solid var(--border-card);
+      border-radius: 12px;
+      overflow: hidden;
+      background: #000;
+      margin-bottom: 0.75rem;
+    }
+    .img-box img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+      display: block;
+    }
+    .tag-reject {
+      background: var(--red-bg);
+      border: 1px solid var(--red-border);
+      color: #ef4444;
+      font-size: 0.75rem;
+      font-weight: 800;
+      padding: 0.25rem 0.6rem;
+      border-radius: 6px;
+      display: inline-block;
+      margin-bottom: 0.5rem;
+    }
+    .tag-keep {
+      background: var(--green-bg);
+      border: 1px solid var(--green-border);
+      color: #10b981;
+      font-size: 0.75rem;
+      font-weight: 800;
+      padding: 0.25rem 0.6rem;
+      border-radius: 6px;
+      display: inline-block;
+      margin-bottom: 0.5rem;
+    }
+    .discernment-quote {
+      background: rgba(244,114,182,0.08);
+      border-left: 4px solid var(--accent);
+      padding: 1rem 1.25rem;
+      border-radius: 0 12px 12px 0;
+      font-size: 0.9rem;
+      line-height: 1.6;
+      color: rgba(255,241,242,0.9);
+      margin-top: 0.5rem;
+    }
+    .footer-text {
+      text-align: center;
+      font-size: 0.8rem;
+      color: rgba(255,241,242,0.5);
+      margin-top: 2rem;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="badge">General AI Fluency — Week 3 Assignment</div>
+    <h1>Kill Your Darlings: Image Curation Report</h1>
+    <div class="subtitle">Visual Discernment, Asset Curation &amp; Real Code Proof for Atisha Priyadarshani</div>
+
+    <!-- Need Map Table -->
+    <div class="card">
+      <div class="card-title">🗺️ Portfolio Image Need Map</div>
+      <table>
+        <thead>
+          <tr>
+            <th>Need Category</th>
+            <th>Asset Type</th>
+            <th>Source / Selection</th>
+            <th>Curation Rationale</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Product UI Proof</strong></td>
+            <td>Real Code Capture</td>
+            <td>Live Screenshot of `ZenFlow` React UI</td>
+            <td>Establishes empirical proof of functional React state, actual timer intervals, and exact layout math.</td>
+          </tr>
+          <tr>
+            <td><strong>System Health</strong></td>
+            <td>Real Code Capture</td>
+            <td>Live `/health` Server Component</td>
+            <td>Proves live API data-fetching &amp; Next.js 15 App Router architecture.</td>
+          </tr>
+          <tr>
+            <td><strong>Connective Tissue</strong></td>
+            <td>AI-Generated Asset</td>
+            <td>Curated Obsidian Cherry Blossom Banner</td>
+            <td>Provides a calm background texture perfectly matching our Identity Kit palette (#120A14, #EC4899).</td>
+          </tr>
+          <tr>
+            <td><strong>Personal Author</strong></td>
+            <td>Real Photography</td>
+            <td>Professional Developer Avatar</td>
+            <td>Establishes authentic personal identity and genuine project authorship.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Decision Matrix & Rejection Analysis -->
+    <div class="card">
+      <div class="card-title">⚖️ Visual Discernment &amp; Rejection Notes (Graded Section)</div>
+      
+      <div class="grid-2">
+        <!-- Rejected Item -->
+        <div style="background: rgba(20,10,25,0.6); padding: 1.25rem; border-radius: 14px; border: 1px solid var(--red-border);">
+          <div class="tag-reject">❌ REJECTED AI GENERATION</div>
+          <div class="img-box">
+            <img src="./public/rejected_ai_image.png" alt="Rejected AI Asset">
+          </div>
+          <div style="font-size: 0.85rem; font-weight: 700; color: #ef4444; margin-bottom: 0.35rem;">Hyper-Neon 3D Ribbon Texture</div>
+          <div style="font-size: 0.8rem; color: rgba(255,241,242,0.75); line-height: 1.5;">
+            <strong>Why Rejected:</strong> The harsh cyan lens flares and dense glossy 3D ribbons created extreme visual clutter. It violated our Identity Kit rule: <em>"calm enough that your work is the loudest thing on the page"</em>.
+          </div>
+        </div>
+
+        <!-- Kept Item -->
+        <div style="background: rgba(20,10,25,0.6); padding: 1.25rem; border-radius: 14px; border: 1px solid var(--green-border);">
+          <div class="tag-keep">✅ CURATED KEEPER (AI HERO)</div>
+          <div class="img-box">
+            <img src="./public/curated_hero_bg.png" alt="Curated Hero Asset">
+          </div>
+          <div style="font-size: 0.85rem; font-weight: 700; color: #10b981; margin-bottom: 0.35rem;">Obsidian Blossom Header</div>
+          <div style="font-size: 0.8rem; color: rgba(255,241,242,0.75); line-height: 1.5;">
+            <strong>Why Kept:</strong> Subtle ambient pink wave lighting on deep obsidian plum background. Restrained, elegant, and frames the UI content without competing with it.
+          </div>
+        </div>
+      </div>
+
+      <div class="discernment-quote" style="margin-top: 1.25rem;">
+        <strong>Core Discernment Rule:</strong> <em>"AI image generators excel at concept art, but fail when rendering UIs (fake non-functional buttons, broken text, impossible layout math). We used real code captures for all product UI screens to prove real code execution, and used AI strictly for harmonious connective background textures."</em>
+      </div>
+    </div>
+
+    <div class="footer-text">
+      Atisha Priyadarshani &bull; FlyRank General AI Fluency Assignment &bull; Live App: https://zen-flow-blush.vercel.app/
+    </div>
+  </div>
+</body>
+</html>
