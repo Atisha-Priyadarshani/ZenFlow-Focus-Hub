@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Play, Pause, RotateCcw } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { Play, Pause, RotateCcw, Bell } from 'lucide-react';
 
 export type TimerMode = 'focus' | 'shortBreak' | 'longBreak';
 
@@ -18,8 +18,38 @@ export const PomodoroTimer: React.FC<PomodoroTimerProps> = ({ onSessionComplete 
   const [timeLeft, setTimeLeft] = useState<number>(MODE_DURATIONS.focus);
   const [isRunning, setIsRunning] = useState<boolean>(false);
   const [completedSessions, setCompletedSessions] = useState<number>(0);
+  const audioCtxRef = useRef<AudioContext | null>(null);
 
-  // Timer tick effect with proper interval cleanup to prevent memory leaks
+  // Play real audio chime when session completes using Web Audio API oscillator
+  const playAlarmChime = () => {
+    try {
+      if (!audioCtxRef.current) {
+        audioCtxRef.current = new (window.AudioContext || (window as any).webkitAudioContext)();
+      }
+      const ctx = audioCtxRef.current;
+      if (ctx.state === 'suspended') ctx.resume();
+
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(587.33, ctx.currentTime); // D5 note
+      osc.frequency.setValueAtTime(880, ctx.currentTime + 0.15); // A5 note
+
+      gain.gain.setValueAtTime(0.3, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 1.2);
+
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+
+      osc.start();
+      osc.stop(ctx.currentTime + 1.2);
+    } catch (e) {
+      console.log('Audio chime error:', e);
+    }
+  };
+
+  // Timer tick effect with cleanup
   useEffect(() => {
     let interval: NodeJS.Timeout | null = null;
 
@@ -29,6 +59,7 @@ export const PomodoroTimer: React.FC<PomodoroTimerProps> = ({ onSessionComplete 
       }, 1000);
     } else if (timeLeft === 0) {
       setIsRunning(false);
+      playAlarmChime();
       if (mode === 'focus') {
         setCompletedSessions((prev) => prev + 1);
         if (onSessionComplete) onSessionComplete();
@@ -113,8 +144,8 @@ export const PomodoroTimer: React.FC<PomodoroTimerProps> = ({ onSessionComplete 
         </button>
       </div>
 
-      <div style={{ marginTop: '1.5rem', textAlign: 'center', fontSize: '0.85rem', color: '#94a3b8' }}>
-        Completed Sessions Today: <strong style={{ color: '#a855f7' }}>{completedSessions}</strong>
+      <div style={{ marginTop: '1.5rem', textAlign: 'center', fontSize: '0.85rem', color: '#94a3b8', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
+        <Bell size={14} color="#a855f7" /> Completed Sessions Today: <strong style={{ color: '#a855f7' }}>{completedSessions}</strong>
       </div>
     </div>
   );
