@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Flower2, Quote, RefreshCw } from 'lucide-react';
+import { Flower2, Quote, RefreshCw, Sun, Moon } from 'lucide-react';
 import { PomodoroTimer } from './components/PomodoroTimer';
 import { TaskManager } from './components/TaskManager';
 import { HabitTracker } from './components/HabitTracker';
@@ -17,6 +17,9 @@ const MOTIVATION_QUOTES = [
 export default function App() {
   const todayStr = new Date().toISOString().split('T')[0];
   const [quoteIndex, setQuoteIndex] = useState<number>(0);
+  const [themeMode, setThemeMode] = useState<'dark' | 'light'>(() => {
+    return (localStorage.getItem('zenflow_theme') as 'dark' | 'light') || 'dark';
+  });
 
   const [completedHistory, setCompletedHistory] = useState<Record<string, ActivityHistoryRecord>>(() => {
     try {
@@ -43,6 +46,12 @@ export default function App() {
     }
   });
 
+  // Toggle theme class on body
+  useEffect(() => {
+    document.body.className = `${themeMode}-mode`;
+    localStorage.setItem('zenflow_theme', themeMode);
+  }, [themeMode]);
+
   useEffect(() => {
     try {
       localStorage.setItem('zenflow_history', JSON.stringify(completedHistory));
@@ -50,6 +59,10 @@ export default function App() {
       console.error('Failed to save history to localStorage', e);
     }
   }, [completedHistory]);
+
+  const toggleTheme = () => {
+    setThemeMode((prev) => (prev === 'dark' ? 'light' : 'dark'));
+  };
 
   const rotateQuote = () => {
     setQuoteIndex((prev) => (prev + 1) % MOTIVATION_QUOTES.length);
@@ -99,38 +112,62 @@ export default function App() {
     <div className="zenflow-app">
       <header className="header">
         <div className="logo-group">
-          <Flower2 size={30} color="#f472b6" />
+          <Flower2 size={30} color="#ec4899" />
           <div>
             <h1 className="logo-title">ZenFlow</h1>
-            <p style={{ margin: 0, fontSize: '0.85rem', color: '#f472b6', fontWeight: 500 }}>
-              Cherry Blossom Study &amp; Focus Workspace
+            <p style={{ margin: 0, fontSize: '0.85rem', color: '#ec4899', fontWeight: 600 }}>
+              Cherry Blossom Focus Workspace
             </p>
           </div>
         </div>
 
-        {/* Short Motivational Quote Pill */}
-        <div
-          onClick={rotateQuote}
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '0.5rem',
-            background: 'rgba(244, 114, 182, 0.12)',
-            border: '1px solid rgba(244, 114, 182, 0.3)',
-            borderRadius: '9999px',
-            padding: '0.4rem 0.95rem',
-            color: '#fbcfe8',
-            fontSize: '0.82rem',
-            fontWeight: 600,
-            cursor: 'pointer',
-            boxShadow: '0 4px 14px rgba(244, 114, 182, 0.15)',
-            maxWidth: '380px',
-          }}
-          title="Click to rotate motivation quote"
-        >
-          <Quote size={14} color="#f472b6" />
-          <span>&quot;{MOTIVATION_QUOTES[quoteIndex]}&quot;</span>
-          <RefreshCw size={12} color="#fda4af" style={{ opacity: 0.8 }} />
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+          {/* Short Motivational Quote Pill */}
+          <div
+            onClick={rotateQuote}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.5rem',
+              background: 'rgba(244, 114, 182, 0.12)',
+              border: '1px solid rgba(244, 114, 182, 0.3)',
+              borderRadius: '9999px',
+              padding: '0.4rem 0.95rem',
+              color: 'var(--text-main)',
+              fontSize: '0.82rem',
+              fontWeight: 600,
+              cursor: 'pointer',
+              boxShadow: '0 4px 14px rgba(244, 114, 182, 0.12)',
+              maxWidth: '350px',
+            }}
+            title="Click to rotate motivation quote"
+          >
+            <Quote size={14} color="#ec4899" />
+            <span>&quot;{MOTIVATION_QUOTES[quoteIndex]}&quot;</span>
+            <RefreshCw size={12} color="#ec4899" style={{ opacity: 0.8 }} />
+          </div>
+
+          {/* Light / Dark Mode Toggle Button */}
+          <button
+            onClick={toggleTheme}
+            style={{
+              background: 'rgba(244, 114, 182, 0.15)',
+              border: '1px solid rgba(244, 114, 182, 0.3)',
+              color: '#ec4899',
+              borderRadius: '9999px',
+              width: '38px',
+              height: '38px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              cursor: 'pointer',
+              transition: 'all 0.2s ease',
+            }}
+            aria-label="Toggle Light and Dark Mode"
+            title={themeMode === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+          >
+            {themeMode === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
+          </button>
         </div>
       </header>
 

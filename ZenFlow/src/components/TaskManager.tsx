@@ -77,7 +77,7 @@ export const TaskManager: React.FC<TaskManagerProps> = ({ onTaskCompleted }) => 
 
   return (
     <div className="card" role="region" aria-label="Study Tasks Manager">
-      <h3 style={{ margin: '0 0 0.85rem 0', fontSize: '1.15rem', color: '#f8fafc' }}>Focus Objectives</h3>
+      <h3 style={{ margin: '0 0 0.85rem 0', fontSize: '1.15rem', color: 'var(--text-main)', fontWeight: 700 }}>Focus Objectives</h3>
 
       <form onSubmit={addTask} style={{ display: 'flex', gap: '0.5rem', marginBottom: '1rem' }}>
         <input
@@ -89,9 +89,9 @@ export const TaskManager: React.FC<TaskManagerProps> = ({ onTaskCompleted }) => 
             flex: 1,
             padding: '0.55rem 0.85rem',
             borderRadius: '10px',
-            border: '1px solid rgba(255, 255, 255, 0.1)',
-            background: 'rgba(15, 23, 42, 0.6)',
-            color: 'white',
+            border: '1px solid var(--border-card)',
+            background: 'var(--bg-input)',
+            color: 'var(--text-main)',
             outline: 'none',
           }}
           aria-label="New task title"
@@ -102,9 +102,9 @@ export const TaskManager: React.FC<TaskManagerProps> = ({ onTaskCompleted }) => 
           style={{
             padding: '0.55rem 0.75rem',
             borderRadius: '10px',
-            border: '1px solid rgba(255, 255, 255, 0.1)',
-            background: 'rgba(15, 23, 42, 0.6)',
-            color: 'white',
+            border: '1px solid var(--border-card)',
+            background: 'var(--bg-input)',
+            color: 'var(--text-main)',
           }}
           aria-label="Task category"
         >
@@ -131,7 +131,7 @@ export const TaskManager: React.FC<TaskManagerProps> = ({ onTaskCompleted }) => 
             </button>
             <button
               onClick={() => setTaskToDelete(null)}
-              style={{ background: 'rgba(255,255,255,0.1)', color: '#cbd5e1', border: 'none', borderRadius: '6px', padding: '0.25rem 0.6rem', fontSize: '0.8rem', cursor: 'pointer' }}
+              style={{ background: 'rgba(255,255,255,0.1)', color: 'var(--text-main)', border: 'none', borderRadius: '6px', padding: '0.25rem 0.6rem', fontSize: '0.8rem', cursor: 'pointer' }}
             >
               Cancel
             </button>
@@ -141,7 +141,7 @@ export const TaskManager: React.FC<TaskManagerProps> = ({ onTaskCompleted }) => 
 
       <div className="scrollable-list">
         {tasks.length === 0 ? (
-          <p style={{ textAlign: 'center', color: '#94a3b8', fontSize: '0.85rem', padding: '1rem 0' }}>
+          <p style={{ textAlign: 'center', color: 'var(--text-dim)', fontSize: '0.85rem', padding: '1rem 0' }}>
             No tasks added yet. Stay focused and add your first objective!
           </p>
         ) : (
@@ -152,16 +152,16 @@ export const TaskManager: React.FC<TaskManagerProps> = ({ onTaskCompleted }) => 
                 onClick={() => toggleTask(task.id)}
               >
                 {task.completed ? (
-                  <CheckCircle2 size={18} color="#10b981" />
+                  <CheckCircle2 size={18} color="#ec4899" />
                 ) : (
-                  <Circle size={18} color="#94a3b8" />
+                  <Circle size={18} color="var(--text-dim)" />
                 )}
                 <span className={task.completed ? 'task-completed' : ''} style={{ fontSize: '0.9rem' }}>
                   {task.title}
                 </span>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                <span style={{ fontSize: '0.7rem', padding: '0.2rem 0.5rem', background: 'rgba(99, 102, 241, 0.2)', color: '#818cf8', borderRadius: '6px' }}>
+                <span style={{ fontSize: '0.7rem', padding: '0.2rem 0.5rem', background: 'rgba(244, 114, 182, 0.15)', color: '#f472b6', borderRadius: '6px', fontWeight: 600 }}>
                   {task.category}
                 </span>
                 <button
