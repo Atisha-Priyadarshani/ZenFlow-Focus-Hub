@@ -31,38 +31,39 @@ const BG_SELECTED = '#6366f1';
 const BG_RECORD = 'rgba(16, 185, 129, 0.2)';
 const BG_DEFAULT = 'rgba(15, 23, 42, 0.6)';
 
-interface DayButtonProps {
-  day: number;
+interface DayPillProps {
+  dayName: string;
+  dayNum: number;
   isSelected: boolean;
   hasRecord: boolean;
   onClick: () => void;
 }
 
-const DayButton: React.FC<DayButtonProps> = ({ day, isSelected, hasRecord, onClick }) => {
+const DayPill: React.FC<DayPillProps> = ({ dayName, dayNum, isSelected, hasRecord, onClick }) => {
   const borderVal = isSelected ? BORDER_ACTIVE : BORDER_DEFAULT;
   const bgVal = isSelected ? BG_SELECTED : hasRecord ? BG_RECORD : BG_DEFAULT;
   const colorVal = isSelected ? '#ffffff' : hasRecord ? '#34d399' : '#94a3b8';
-  const weightVal = isSelected || hasRecord ? 700 : 400;
 
   return (
     <button
       onClick={onClick}
       style={{
-        aspectRatio: '1',
-        borderRadius: '8px',
+        flex: 1,
+        padding: '0.4rem 0.2rem',
+        borderRadius: '10px',
         border: borderVal,
         background: bgVal,
         color: colorVal,
-        fontWeight: weightVal,
-        fontSize: '0.85rem',
         cursor: 'pointer',
         display: 'flex',
+        flexDirection: 'column',
         alignItems: 'center',
-        justifyContent: 'center',
+        gap: '0.1rem',
       }}
-      aria-label="Select calendar date"
+      aria-label="Select date pill"
     >
-      {day}
+      <span style={{ fontSize: '0.65rem', textTransform: 'uppercase', opacity: 0.8 }}>{dayName}</span>
+      <span style={{ fontSize: '0.9rem', fontWeight: 700 }}>{dayNum}</span>
     </button>
   );
 };
@@ -70,33 +71,51 @@ const DayButton: React.FC<DayButtonProps> = ({ day, isSelected, hasRecord, onCli
 export const CompletionCalendar: React.FC = () => {
   const [selectedDate, setSelectedDate] = useState<string>(new Date().toISOString().split('T')[0]);
 
-  const today = new Date();
-  const year = today.getFullYear();
-  const month = today.getMonth();
-  const daysInMonth = new Date(year, month + 1, 0).getDate();
-
-  const daysArray = Array.from({ length: daysInMonth }, (_, i) => {
-    const d = i + 1;
-    const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
-    return { day: d, dateStr };
+  // Generate last 7 days (Today & past 6 days)
+  const last7Days = Array.from({ length: 7 }, (_, i) => {
+    const d = new Date();
+    d.setDate(d.getDate() - (6 - i));
+    const dateStr = d.toISOString().split('T')[0];
+    const dayName = d.toLocaleDateString('en-US', { weekday: 'short' });
+    const dayNum = d.getDate();
+    return { dateStr, dayName, dayNum };
   });
 
   const selectedRecord = MOCK_HISTORY[selectedDate];
 
   return (
     <div className="card" style={{ marginTop: '1.5rem' }} role="region" aria-label="Activity History Calendar">
-      <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem' }}>
-        <CalendarIcon size={20} color="#a855f7" />
-        <h3 style={{ margin: 0, fontSize: '1.15rem', color: '#f8fafc' }}>
-          Completion Calendar ({today.toLocaleString('default', { month: 'long', year: 'numeric' })})
-        </h3>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          <CalendarIcon size={20} color="#a855f7" />
+          <h3 style={{ margin: 0, fontSize: '1.1rem', color: '#f8fafc' }}>Activity History</h3>
+        </div>
+
+        {/* Compact Date Picker for older dates */}
+        <input
+          type="date"
+          value={selectedDate}
+          onChange={(e) => setSelectedDate(e.target.value)}
+          style={{
+            background: 'rgba(15, 23, 42, 0.7)',
+            border: '1px solid rgba(168, 85, 247, 0.4)',
+            color: '#c084fc',
+            borderRadius: '8px',
+            padding: '0.3rem 0.5rem',
+            fontSize: '0.8rem',
+            cursor: 'pointer',
+          }}
+          aria-label="Pick date"
+        />
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '0.4rem', marginBottom: '1.25rem' }}>
-        {daysArray.map(({ day, dateStr }) => (
-          <DayButton
+      {/* Sleek 7-Day Compact Strip */}
+      <div style={{ display: 'flex', gap: '0.4rem', marginBottom: '1rem' }}>
+        {last7Days.map(({ dateStr, dayName, dayNum }) => (
+          <DayPill
             key={dateStr}
-            day={day}
+            dayName={dayName}
+            dayNum={dayNum}
             isSelected={selectedDate === dateStr}
             hasRecord={Boolean(MOCK_HISTORY[dateStr])}
             onClick={() => setSelectedDate(dateStr)}
@@ -104,10 +123,11 @@ export const CompletionCalendar: React.FC = () => {
         ))}
       </div>
 
-      <div style={{ background: 'rgba(15, 23, 42, 0.6)', borderRadius: '12px', padding: '1rem', border: '1px solid rgba(255,255,255,0.08)' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
+      {/* Selected Date Activity Summary */}
+      <div style={{ background: 'rgba(15, 23, 42, 0.6)', borderRadius: '12px', padding: '0.85rem 1rem', border: '1px solid rgba(255,255,255,0.08)' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.4rem' }}>
           <span style={{ fontSize: '0.85rem', fontWeight: 600, color: '#f8fafc' }}>
-            Selected Date: {selectedDate}
+            Date: {selectedDate}
           </span>
           {selectedRecord && (
             <span style={{ fontSize: '0.75rem', color: '#a855f7', display: 'flex', alignItems: 'center', gap: '0.25rem', fontWeight: 600 }}>
@@ -122,9 +142,6 @@ export const CompletionCalendar: React.FC = () => {
           </p>
         ) : (
           <div>
-            <div style={{ fontSize: '0.8rem', color: '#cbd5e1', marginBottom: '0.4rem', fontWeight: 600 }}>
-              Completed Items:
-            </div>
             {selectedRecord.completedTasks.map((t, idx) => (
               <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.85rem', color: '#34d399', marginBottom: '0.25rem' }}>
                 <CheckCircle2 size={14} /> {t}
