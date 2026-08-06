@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Sparkles, Quote, RefreshCw } from 'lucide-react';
+import { Flower2, Quote, RefreshCw } from 'lucide-react';
 import { PomodoroTimer } from './components/PomodoroTimer';
 import { TaskManager } from './components/TaskManager';
 import { HabitTracker } from './components/HabitTracker';
@@ -11,7 +11,7 @@ const MOTIVATION_QUOTES = [
   "Small daily wins compound into greatness.",
   "Your future self will thank you for today's effort.",
   "Deep work creates extraordinary results.",
-  "Stay hungry, stay consistent.",
+  "Bloom with consistency every single day.",
 ];
 
 export default function App() {
@@ -99,11 +99,11 @@ export default function App() {
     <div className="zenflow-app">
       <header className="header">
         <div className="logo-group">
-          <Sparkles size={28} color="#a855f7" />
+          <Flower2 size={30} color="#f472b6" />
           <div>
             <h1 className="logo-title">ZenFlow</h1>
-            <p style={{ margin: 0, fontSize: '0.85rem', color: '#94a3b8' }}>
-              Focus Productivity &amp; Study Workspace
+            <p style={{ margin: 0, fontSize: '0.85rem', color: '#f472b6', fontWeight: 500 }}>
+              Cherry Blossom Study &amp; Focus Workspace
             </p>
           </div>
         </div>
@@ -115,22 +115,22 @@ export default function App() {
             display: 'flex',
             alignItems: 'center',
             gap: '0.5rem',
-            background: 'rgba(168, 85, 247, 0.12)',
-            border: '1px solid rgba(168, 85, 247, 0.3)',
+            background: 'rgba(244, 114, 182, 0.12)',
+            border: '1px solid rgba(244, 114, 182, 0.3)',
             borderRadius: '9999px',
-            padding: '0.4rem 0.9rem',
-            color: '#e9d5ff',
+            padding: '0.4rem 0.95rem',
+            color: '#fbcfe8',
             fontSize: '0.82rem',
             fontWeight: 600,
             cursor: 'pointer',
-            boxShadow: '0 4px 12px rgba(168, 85, 247, 0.15)',
+            boxShadow: '0 4px 14px rgba(244, 114, 182, 0.15)',
             maxWidth: '380px',
           }}
           title="Click to rotate motivation quote"
         >
-          <Quote size={14} color="#c084fc" />
+          <Quote size={14} color="#f472b6" />
           <span>&quot;{MOTIVATION_QUOTES[quoteIndex]}&quot;</span>
-          <RefreshCw size={12} color="#94a3b8" style={{ opacity: 0.7 }} />
+          <RefreshCw size={12} color="#fda4af" style={{ opacity: 0.8 }} />
         </div>
       </header>
 

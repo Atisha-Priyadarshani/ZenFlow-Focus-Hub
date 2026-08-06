@@ -1,11 +1,11 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
 
 :root {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   line-height: 1.5;
   color-scheme: dark;
-  color: #f8fafc;
-  background: #0b0f19;
+  color: #fff1f2;
+  background: #120a14;
 }
 
 * {
@@ -15,7 +15,7 @@
 body {
   margin: 0;
   min-height: 100vh;
-  background: radial-gradient(circle at 50% -20%, #171e2e 0%, #0b0f19 75%);
+  background: radial-gradient(circle at 50% -10%, #3b163e 0%, #1a0c1e 50%, #120a14 85%);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -23,17 +23,17 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* Premium SaaS Application Container */
+/* Cherry Blossom Glassmorphic Container */
 .zenflow-app {
   width: 100%;
   max-width: 1060px;
-  background: rgba(15, 23, 42, 0.65);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 20px;
+  background: rgba(30, 16, 35, 0.7);
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
+  border: 1px solid rgba(244, 114, 182, 0.18);
+  border-radius: 24px;
   padding: 2.25rem;
-  box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  box-shadow: 0 30px 60px -15px rgba(18, 10, 20, 0.9), 0 0 40px rgba(244, 114, 182, 0.12);
   animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
@@ -47,7 +47,7 @@ body {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 1.75rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  border-bottom: 1px solid rgba(244, 114, 182, 0.15);
   padding-bottom: 1.25rem;
 }
 
@@ -59,10 +59,10 @@ body {
 
 .logo-title {
   margin: 0;
-  font-size: 1.65rem;
+  font-size: 1.75rem;
   font-weight: 800;
   letter-spacing: -0.03em;
-  background: linear-gradient(135deg, #ffffff 30%, #cbd5e1 100%);
+  background: linear-gradient(135deg, #fbcfe8 20%, #f472b6 60%, #ec4899 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -79,11 +79,11 @@ body {
   }
 }
 
-/* Equal Fixed Height SaaS Cards */
+/* Cherry Blossom Organic Glass Cards */
 .card {
-  background: rgba(30, 41, 59, 0.4);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  border-radius: 16px;
+  background: rgba(40, 20, 48, 0.45);
+  border: 1px solid rgba(244, 114, 182, 0.14);
+  border-radius: 20px;
   padding: 1.5rem;
   height: 480px;
   min-height: 480px;
@@ -91,12 +91,12 @@ body {
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .card:hover {
-  border-color: rgba(255, 255, 255, 0.12);
-  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+  border-color: rgba(244, 114, 182, 0.3);
+  box-shadow: 0 12px 30px -10px rgba(244, 114, 182, 0.25);
 }
 
 .scrollable-list {
@@ -111,14 +111,14 @@ body {
 }
 
 .scrollable-list::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.15);
+  background: rgba(244, 114, 182, 0.25);
   border-radius: 4px;
 }
 
 .delete-banner {
-  background: rgba(239, 68, 68, 0.12);
-  border: 1px solid rgba(239, 68, 68, 0.25);
-  border-radius: 10px;
+  background: rgba(239, 68, 68, 0.15);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: 12px;
   padding: 0.75rem 1rem;
   margin-bottom: 0.75rem;
   display: flex;
@@ -128,14 +128,16 @@ body {
 }
 
 .timer-display {
-  font-size: 4.5rem;
+  font-size: 4.6rem;
   font-weight: 800;
   font-variant-numeric: tabular-nums;
   text-align: center;
   margin: 1.25rem 0;
   letter-spacing: -0.04em;
-  color: #ffffff;
-  text-shadow: 0 0 40px rgba(99, 102, 241, 0.2);
+  background: linear-gradient(135deg, #ffffff 40%, #fbcfe8 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0 0 35px rgba(244, 114, 182, 0.3);
 }
 
 .timer-controls {
@@ -145,28 +147,28 @@ body {
 }
 
 .btn {
-  padding: 0.65rem 1.35rem;
-  border-radius: 10px;
-  font-weight: 600;
+  padding: 0.65rem 1.4rem;
+  border-radius: 12px;
+  font-weight: 700;
   font-size: 0.9rem;
   border: none;
   cursor: pointer;
-  transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   display: flex;
   align-items: center;
   gap: 0.45rem;
 }
 
 .btn-primary {
-  background: #6366f1;
+  background: linear-gradient(135deg, #f472b6, #ec4899);
   color: white;
-  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+  box-shadow: 0 4px 14px rgba(236, 72, 153, 0.35);
 }
 
 .btn-primary:hover {
-  background: #4f46e5;
+  background: linear-gradient(135deg, #ec4899, #db2777);
   transform: translateY(-1px);
-  box-shadow: 0 6px 16px rgba(99, 102, 241, 0.4);
+  box-shadow: 0 6px 20px rgba(236, 72, 153, 0.45);
 }
 
 .btn-primary:active {
@@ -174,13 +176,13 @@ body {
 }
 
 .btn-secondary {
-  background: rgba(255, 255, 255, 0.06);
-  color: #cbd5e1;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(244, 114, 182, 0.08);
+  color: #fbcfe8;
+  border: 1px solid rgba(244, 114, 182, 0.18);
 }
 
 .btn-secondary:hover {
-  background: rgba(255, 255, 255, 0.12);
+  background: rgba(244, 114, 182, 0.16);
   color: #ffffff;
 }
 
@@ -188,56 +190,56 @@ body {
   display: flex;
   justify-content: center;
   gap: 0.35rem;
-  background: rgba(15, 23, 42, 0.6);
-  padding: 0.3rem;
-  border-radius: 10px;
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: rgba(20, 10, 25, 0.6);
+  padding: 0.35rem;
+  border-radius: 12px;
+  border: 1px solid rgba(244, 114, 182, 0.12);
 }
 
 .mode-pill {
   background: transparent;
   border: none;
-  color: #94a3b8;
+  color: #fda4af;
   padding: 0.45rem 0.85rem;
-  border-radius: 7px;
-  font-weight: 600;
+  border-radius: 8px;
+  font-weight: 700;
   cursor: pointer;
   font-size: 0.82rem;
-  transition: all 0.15s ease;
+  transition: all 0.18s ease;
 }
 
 .mode-pill.active {
-  background: #6366f1;
+  background: linear-gradient(135deg, #f472b6, #ec4899);
   color: white;
-  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
+  box-shadow: 0 2px 10px rgba(236, 72, 153, 0.35);
 }
 
 .task-item {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0.7rem 0.9rem;
-  background: rgba(15, 23, 42, 0.45);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  border-radius: 10px;
+  padding: 0.7rem 0.95rem;
+  background: rgba(25, 12, 32, 0.5);
+  border: 1px solid rgba(244, 114, 182, 0.1);
+  border-radius: 12px;
   margin-bottom: 0.55rem;
-  transition: all 0.15s ease;
+  transition: all 0.18s ease;
 }
 
 .task-item:hover {
-  border-color: rgba(255, 255, 255, 0.12);
-  background: rgba(15, 23, 42, 0.65);
+  border-color: rgba(244, 114, 182, 0.25);
+  background: rgba(35, 18, 42, 0.7);
 }
 
 .task-completed {
   text-decoration: line-through;
-  color: #64748b;
+  color: #9f7596;
 }
 
-/* Sleek SaaS Accent for Today's Date Pill */
+/* Cherry Blossom Today's Date Pill */
 .day-pill-today {
-  background: #6366f1 !important;
+  background: linear-gradient(135deg, #f472b6, #ec4899) !important;
   color: #ffffff !important;
-  border: 1px solid #818cf8 !important;
-  box-shadow: 0 0 10px rgba(99, 102, 241, 0.35) !important;
+  border: 1px solid #fbcfe8 !important;
+  box-shadow: 0 0 12px rgba(244, 114, 182, 0.45) !important;
 }

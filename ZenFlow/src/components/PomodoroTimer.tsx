@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Play, Pause, RotateCcw, Bell, Zap } from 'lucide-react';
+import { Play, Pause, RotateCcw, Bell, Sparkles } from 'lucide-react';
 
 export type TimerMode = 'focus' | 'shortBreak' | 'longBreak';
 
@@ -138,8 +138,8 @@ export const PomodoroTimer: React.FC<PomodoroTimerProps> = ({ onSessionComplete 
 
       {/* Prominent Quick Presets + Custom Mins Input in One Single Row */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', flexWrap: 'wrap', marginBottom: '0.5rem' }}>
-        <span style={{ fontSize: '0.85rem', color: '#94a3b8', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
-          <Zap size={14} color="#f59e0b" /> Quick:
+        <span style={{ fontSize: '0.85rem', color: '#fda4af', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+          <Sparkles size={14} color="#f472b6" /> Quick:
         </span>
 
         {[10, 25, 45, 60].map((m) => (
@@ -147,9 +147,9 @@ export const PomodoroTimer: React.FC<PomodoroTimerProps> = ({ onSessionComplete 
             key={m}
             onClick={() => handleQuickPreset(m)}
             style={{
-              background: 'rgba(255, 255, 255, 0.08)',
-              border: '1px solid rgba(255, 255, 255, 0.12)',
-              color: '#e2e8f0',
+              background: 'rgba(244, 114, 182, 0.1)',
+              border: '1px solid rgba(244, 114, 182, 0.2)',
+              color: '#fbcfe8',
               borderRadius: '8px',
               padding: '0.35rem 0.75rem',
               fontSize: '0.85rem',
@@ -174,9 +174,9 @@ export const PomodoroTimer: React.FC<PomodoroTimerProps> = ({ onSessionComplete 
               width: '85px',
               padding: '0.35rem 0.6rem',
               borderRadius: '8px',
-              background: 'rgba(15, 23, 42, 0.7)',
-              border: '1px solid rgba(168, 85, 247, 0.4)',
-              color: '#c084fc',
+              background: 'rgba(20, 10, 25, 0.7)',
+              border: '1px solid rgba(244, 114, 182, 0.4)',
+              color: '#fbcfe8',
               fontSize: '0.85rem',
               fontWeight: 600,
               outline: 'none',
@@ -186,7 +186,7 @@ export const PomodoroTimer: React.FC<PomodoroTimerProps> = ({ onSessionComplete 
           <button
             type="submit"
             style={{
-              background: '#6366f1',
+              background: 'linear-gradient(135deg, #f472b6, #ec4899)',
               color: 'white',
               border: 'none',
               borderRadius: '8px',
@@ -224,8 +224,8 @@ export const PomodoroTimer: React.FC<PomodoroTimerProps> = ({ onSessionComplete 
         </button>
       </div>
 
-      <div style={{ marginTop: 'auto', textAlign: 'center', fontSize: '0.85rem', color: '#94a3b8', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', paddingTop: '0.75rem' }}>
-        <Bell size={14} color="#a855f7" /> Completed Sessions Today: <strong style={{ color: '#a855f7' }}>{completedSessions}</strong>
+      <div style={{ marginTop: 'auto', textAlign: 'center', fontSize: '0.85rem', color: '#fda4af', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', paddingTop: '0.75rem' }}>
+        <Bell size={14} color="#f472b6" /> Completed Sessions Today: <strong style={{ color: '#f472b6' }}>{completedSessions}</strong>
       </div>
     </div>
   );
