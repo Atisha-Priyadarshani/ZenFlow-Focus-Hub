@@ -27,7 +27,7 @@ body {
   backdrop-filter: blur(20px);
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 24px;
-  padding: 2.5rem;
+  padding: 2.25rem;
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
 }
 
@@ -35,9 +35,9 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 2rem;
+  margin-bottom: 1.75rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-  padding-bottom: 1.25rem;
+  padding-bottom: 1rem;
 }
 
 .logo-group {
@@ -58,7 +58,7 @@ body {
 .main-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 2rem;
+  gap: 1.5rem;
 }
 
 @media (max-width: 850px) {
@@ -67,23 +67,25 @@ body {
   }
 }
 
+/* Enforce strict uniform fixed height across ALL cards */
 .card {
   background: rgba(30, 41, 59, 0.5);
   border: 1px solid rgba(255, 255, 255, 0.06);
   border-radius: 18px;
-  padding: 1.75rem;
-}
-
-.card-scrollable {
+  padding: 1.5rem;
+  height: 480px;
+  min-height: 480px;
+  max-height: 480px;
   display: flex;
   flex-direction: column;
-  max-height: 540px;
+  box-sizing: border-box;
 }
 
 .scrollable-list {
   flex: 1;
   overflow-y: auto;
   padding-right: 4px;
+  margin-top: 0.5rem;
 }
 
 .scrollable-list::-webkit-scrollbar {
@@ -99,8 +101,8 @@ body {
   background: rgba(239, 68, 68, 0.15);
   border: 1px solid rgba(239, 68, 68, 0.3);
   border-radius: 12px;
-  padding: 0.85rem 1rem;
-  margin-bottom: 1rem;
+  padding: 0.75rem 1rem;
+  margin-bottom: 0.75rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -195,26 +197,10 @@ body {
   color: #64748b;
 }
 
-.sound-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 0.75rem;
-  margin-top: 1rem;
-}
-
-.sound-card {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0.75rem 1rem;
-  background: rgba(15, 23, 42, 0.5);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  border-radius: 12px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.sound-card.active {
-  border-color: #a855f7;
-  background: rgba(168, 85, 247, 0.15);
+/* Distinct Glowing Styling for Today's Date Pill */
+.day-pill-today {
+  background: linear-gradient(135deg, #ec4899, #8b5cf6) !important;
+  color: #ffffff !important;
+  border: 2px solid #f472b6 !important;
+  box-shadow: 0 0 12px rgba(236, 72, 153, 0.5) !important;
 }

@@ -74,7 +74,11 @@ const HabitRow: React.FC<HabitRowProps> = ({ habit, onToggle, onDelete }) => {
   );
 };
 
-export const HabitTracker: React.FC = () => {
+interface HabitTrackerProps {
+  onHabitCompleted?: (name: string) => void;
+}
+
+export const HabitTracker: React.FC<HabitTrackerProps> = ({ onHabitCompleted }) => {
   const [habits, setHabits] = useState<Habit[]>(() => {
     try {
       const saved = localStorage.getItem('zenflow_habits');
@@ -125,6 +129,9 @@ export const HabitTracker: React.FC = () => {
         if (h.id === id) {
           const isNowCompleted = !h.completedToday;
           const newStreak = isNowCompleted ? h.streak + 1 : Math.max(0, h.streak - 1);
+          if (isNowCompleted && onHabitCompleted) {
+            onHabitCompleted(h.name);
+          }
           return {
             ...h,
             completedToday: isNowCompleted,
@@ -142,29 +149,29 @@ export const HabitTracker: React.FC = () => {
   };
 
   return (
-    <div className="card card-scrollable" style={{ marginTop: '1.5rem', maxHeight: '420px' }} role="region" aria-label="Daily Habit Tracker">
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+    <div className="card" role="region" aria-label="Daily Habit Tracker">
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.85rem' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-          <Flame size={22} color="#f59e0b" />
+          <Flame size={20} color="#f59e0b" />
           <h3 style={{ margin: 0, fontSize: '1.15rem', color: '#f8fafc' }}>Daily Habits &amp; Streaks</h3>
         </div>
         <button
           onClick={() => setIsAdding(!isAdding)}
-          style={{ background: 'rgba(168, 85, 247, 0.2)', border: '1px solid rgba(168, 85, 247, 0.4)', color: '#c084fc', borderRadius: '8px', padding: '0.4rem 0.75rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.35rem', fontWeight: 600, fontSize: '0.85rem' }}
+          style={{ background: 'rgba(168, 85, 247, 0.2)', border: '1px solid rgba(168, 85, 247, 0.4)', color: '#c084fc', borderRadius: '8px', padding: '0.35rem 0.65rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.35rem', fontWeight: 600, fontSize: '0.8rem' }}
           aria-label="Add Habit"
         >
-          <Plus size={16} /> {isAdding ? 'Close' : 'Add Habit'}
+          <Plus size={15} /> {isAdding ? 'Close' : 'Add Habit'}
         </button>
       </div>
 
       {isAdding && (
-        <form onSubmit={handleAddHabit} style={{ background: 'rgba(15, 23, 42, 0.7)', border: '1px solid rgba(168, 85, 247, 0.3)', borderRadius: '12px', padding: '1rem', marginBottom: '1rem' }}>
+        <form onSubmit={handleAddHabit} style={{ background: 'rgba(15, 23, 42, 0.7)', border: '1px solid rgba(168, 85, 247, 0.3)', borderRadius: '12px', padding: '0.85rem', marginBottom: '0.75rem' }}>
           <input
             type="text"
             placeholder="Habit Name (e.g. Daily LeetCode Problem)"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            style={{ width: '100%', padding: '0.55rem 0.85rem', borderRadius: '8px', background: 'rgba(30, 41, 59, 0.8)', border: '1px solid rgba(255, 255, 255, 0.1)', color: 'white', marginBottom: '0.5rem', boxSizing: 'border-box' }}
+            style={{ width: '100%', padding: '0.5rem 0.75rem', borderRadius: '8px', background: 'rgba(30, 41, 59, 0.8)', border: '1px solid rgba(255, 255, 255, 0.1)', color: 'white', marginBottom: '0.5rem', boxSizing: 'border-box' }}
             aria-label="Habit Name"
           />
           <input
@@ -172,10 +179,10 @@ export const HabitTracker: React.FC = () => {
             placeholder="Extra Info / Target (e.g. 30 mins / 1 problem)"
             value={info}
             onChange={(e) => setInfo(e.target.value)}
-            style={{ width: '100%', padding: '0.55rem 0.85rem', borderRadius: '8px', background: 'rgba(30, 41, 59, 0.8)', border: '1px solid rgba(255, 255, 255, 0.1)', color: 'white', marginBottom: '0.75rem', boxSizing: 'border-box' }}
+            style={{ width: '100%', padding: '0.5rem 0.75rem', borderRadius: '8px', background: 'rgba(30, 41, 59, 0.8)', border: '1px solid rgba(255, 255, 255, 0.1)', color: 'white', marginBottom: '0.65rem', boxSizing: 'border-box' }}
             aria-label="Habit Info"
           />
-          <button type="submit" className="btn btn-primary" style={{ width: '100%', padding: '0.5rem', justifyContent: 'center' }}>
+          <button type="submit" className="btn btn-primary" style={{ width: '100%', padding: '0.45rem', justifyContent: 'center' }}>
             Save Habit
           </button>
         </form>
@@ -187,16 +194,14 @@ export const HabitTracker: React.FC = () => {
             No habits added yet. Click &quot;Add Habit&quot; to build your daily streak!
           </p>
         ) : (
-          <div>
-            {habits.map((h) => (
-              <HabitRow
-                key={h.id}
-                habit={h}
-                onToggle={() => toggleHabit(h.id)}
-                onDelete={() => deleteHabit(h.id)}
-              />
-            ))}
-          </div>
+          habits.map((h) => (
+            <HabitRow
+              key={h.id}
+              habit={h}
+              onToggle={() => toggleHabit(h.id)}
+              onDelete={() => deleteHabit(h.id)}
+            />
+          ))
         )}
       </div>
     </div>

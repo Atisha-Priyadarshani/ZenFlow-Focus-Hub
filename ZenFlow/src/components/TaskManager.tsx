@@ -8,7 +8,11 @@ export interface Task {
   category: string;
 }
 
-export const TaskManager: React.FC = () => {
+interface TaskManagerProps {
+  onTaskCompleted?: (title: string) => void;
+}
+
+export const TaskManager: React.FC<TaskManagerProps> = ({ onTaskCompleted }) => {
   const [tasks, setTasks] = useState<Task[]>(() => {
     try {
       const saved = localStorage.getItem('zenflow_tasks');
@@ -26,7 +30,6 @@ export const TaskManager: React.FC = () => {
   const [category, setCategory] = useState('Study');
   const [taskToDelete, setTaskToDelete] = useState<Task | null>(null);
 
-  // Persist tasks to localStorage
   useEffect(() => {
     try {
       localStorage.setItem('zenflow_tasks', JSON.stringify(tasks));
@@ -52,7 +55,16 @@ export const TaskManager: React.FC = () => {
 
   const toggleTask = (id: string) => {
     setTasks((prev) =>
-      prev.map((t) => (t.id === id ? { ...t, completed: !t.completed } : t))
+      prev.map((t) => {
+        if (t.id === id) {
+          const newCompleted = !t.completed;
+          if (newCompleted && onTaskCompleted) {
+            onTaskCompleted(t.title);
+          }
+          return { ...t, completed: newCompleted };
+        }
+        return t;
+      })
     );
   };
 
@@ -64,10 +76,10 @@ export const TaskManager: React.FC = () => {
   };
 
   return (
-    <div className="card card-scrollable" role="region" aria-label="Study Tasks Manager">
-      <h3 style={{ margin: '0 0 1rem 0', fontSize: '1.2rem', color: '#f8fafc' }}>Focus Objectives</h3>
+    <div className="card" role="region" aria-label="Study Tasks Manager">
+      <h3 style={{ margin: '0 0 0.85rem 0', fontSize: '1.15rem', color: '#f8fafc' }}>Focus Objectives</h3>
 
-      <form onSubmit={addTask} style={{ display: 'flex', gap: '0.5rem', marginBottom: '1.25rem' }}>
+      <form onSubmit={addTask} style={{ display: 'flex', gap: '0.5rem', marginBottom: '1rem' }}>
         <input
           type="text"
           value={inputTitle}
@@ -75,7 +87,7 @@ export const TaskManager: React.FC = () => {
           placeholder="Add a new study task..."
           style={{
             flex: 1,
-            padding: '0.6rem 1rem',
+            padding: '0.55rem 0.85rem',
             borderRadius: '10px',
             border: '1px solid rgba(255, 255, 255, 0.1)',
             background: 'rgba(15, 23, 42, 0.6)',
@@ -88,7 +100,7 @@ export const TaskManager: React.FC = () => {
           value={category}
           onChange={(e) => setCategory(e.target.value)}
           style={{
-            padding: '0.6rem 0.8rem',
+            padding: '0.55rem 0.75rem',
             borderRadius: '10px',
             border: '1px solid rgba(255, 255, 255, 0.1)',
             background: 'rgba(15, 23, 42, 0.6)',
@@ -100,12 +112,11 @@ export const TaskManager: React.FC = () => {
           <option value="Coding">Coding</option>
           <option value="Reading">Reading</option>
         </select>
-        <button type="submit" className="btn btn-primary" aria-label="Add Task">
+        <button type="submit" className="btn btn-primary" style={{ padding: '0.55rem 0.85rem' }} aria-label="Add Task">
           <Plus size={18} />
         </button>
       </form>
 
-      {/* Delete Confirmation Banner */}
       {taskToDelete && (
         <div className="delete-banner" role="alert">
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.85rem', color: '#f87171' }}>
@@ -128,44 +139,41 @@ export const TaskManager: React.FC = () => {
         </div>
       )}
 
-      {/* Fixed Container Height + Internal Scrollable Task List */}
       <div className="scrollable-list">
         {tasks.length === 0 ? (
-          <p style={{ textAlign: 'center', color: '#94a3b8', fontSize: '0.9rem', padding: '1rem 0' }}>
+          <p style={{ textAlign: 'center', color: '#94a3b8', fontSize: '0.85rem', padding: '1rem 0' }}>
             No tasks added yet. Stay focused and add your first objective!
           </p>
         ) : (
-          <div>
-            {tasks.map((task) => (
-              <div key={task.id} className="task-item">
-                <div
-                  style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', cursor: 'pointer', flex: 1 }}
-                  onClick={() => toggleTask(task.id)}
-                >
-                  {task.completed ? (
-                    <CheckCircle2 size={18} color="#10b981" />
-                  ) : (
-                    <Circle size={18} color="#94a3b8" />
-                  )}
-                  <span className={task.completed ? 'task-completed' : ''} style={{ fontSize: '0.9rem' }}>
-                    {task.title}
-                  </span>
-                </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                  <span style={{ fontSize: '0.7rem', padding: '0.2rem 0.5rem', background: 'rgba(99, 102, 241, 0.2)', color: '#818cf8', borderRadius: '6px' }}>
-                    {task.category}
-                  </span>
-                  <button
-                    onClick={() => setTaskToDelete(task)}
-                    style={{ background: 'transparent', border: 'none', color: '#ef4444', cursor: 'pointer', padding: '0.2rem' }}
-                    aria-label={`Delete task ${task.title}`}
-                  >
-                    <Trash2 size={16} />
-                  </button>
-                </div>
+          tasks.map((task) => (
+            <div key={task.id} className="task-item">
+              <div
+                style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', cursor: 'pointer', flex: 1 }}
+                onClick={() => toggleTask(task.id)}
+              >
+                {task.completed ? (
+                  <CheckCircle2 size={18} color="#10b981" />
+                ) : (
+                  <Circle size={18} color="#94a3b8" />
+                )}
+                <span className={task.completed ? 'task-completed' : ''} style={{ fontSize: '0.9rem' }}>
+                  {task.title}
+                </span>
               </div>
-            ))}
-          </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <span style={{ fontSize: '0.7rem', padding: '0.2rem 0.5rem', background: 'rgba(99, 102, 241, 0.2)', color: '#818cf8', borderRadius: '6px' }}>
+                  {task.category}
+                </span>
+                <button
+                  onClick={() => setTaskToDelete(task)}
+                  style={{ background: 'transparent', border: 'none', color: '#ef4444', cursor: 'pointer', padding: '0.2rem' }}
+                  aria-label={`Delete task ${task.title}`}
+                >
+                  <Trash2 size={16} />
+                </button>
+              </div>
+            </div>
+          ))
         )}
       </div>
     </div>
