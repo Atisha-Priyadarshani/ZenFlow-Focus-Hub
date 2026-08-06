@@ -7,11 +7,11 @@ export interface ActivityHistoryRecord {
   focusMinutes: number;
 }
 
-const BORDER_ACTIVE = '2px solid #a855f7';
+const BORDER_ACTIVE = '1px solid #818cf8';
 const BORDER_DEFAULT = '1px solid rgba(255,255,255,0.06)';
 const BG_SELECTED = '#6366f1';
-const BG_RECORD = 'rgba(16, 185, 129, 0.2)';
-const BG_DEFAULT = 'rgba(15, 23, 42, 0.6)';
+const BG_RECORD = 'rgba(16, 185, 129, 0.18)';
+const BG_DEFAULT = 'rgba(15, 23, 42, 0.5)';
 
 interface DayPillProps {
   dayName: string;
@@ -23,8 +23,8 @@ interface DayPillProps {
 }
 
 const DayPill: React.FC<DayPillProps> = ({ dayName, dayNum, isToday, isSelected, hasRecord, onClick }) => {
-  const borderVal = isSelected ? BORDER_ACTIVE : isToday ? '2px solid #ec4899' : BORDER_DEFAULT;
-  const bgVal = isToday ? 'linear-gradient(135deg, #ec4899, #8b5cf6)' : isSelected ? BG_SELECTED : hasRecord ? BG_RECORD : BG_DEFAULT;
+  const borderVal = isToday ? '1px solid #818cf8' : isSelected ? BORDER_ACTIVE : BORDER_DEFAULT;
+  const bgVal = isToday ? '#6366f1' : isSelected ? BG_SELECTED : hasRecord ? BG_RECORD : BG_DEFAULT;
   const colorVal = isToday || isSelected ? '#ffffff' : hasRecord ? '#34d399' : '#94a3b8';
 
   return (
@@ -33,7 +33,7 @@ const DayPill: React.FC<DayPillProps> = ({ dayName, dayNum, isToday, isSelected,
       style={{
         flex: 1,
         padding: '0.35rem 0.2rem',
-        borderRadius: '10px',
+        borderRadius: '8px',
         border: borderVal,
         background: bgVal,
         color: colorVal,
@@ -42,14 +42,15 @@ const DayPill: React.FC<DayPillProps> = ({ dayName, dayNum, isToday, isSelected,
         flexDirection: 'column',
         alignItems: 'center',
         gap: '0.1rem',
-        boxShadow: isToday ? '0 0 10px rgba(236, 72, 153, 0.4)' : 'none',
+        boxShadow: isToday ? '0 0 10px rgba(99, 102, 241, 0.35)' : 'none',
+        transition: 'all 0.15s ease',
       }}
       aria-label="Select date pill"
     >
-      <span style={{ fontSize: '0.6rem', textTransform: 'uppercase', opacity: 0.95, fontWeight: isToday ? 800 : 500 }}>
-        {isToday ? '★ TODAY' : dayName}
+      <span style={{ fontSize: '0.6rem', textTransform: 'uppercase', opacity: 0.9, fontWeight: isToday ? 700 : 500 }}>
+        {isToday ? 'TODAY' : dayName}
       </span>
-      <span style={{ fontSize: '0.85rem', fontWeight: 800 }}>{dayNum}</span>
+      <span style={{ fontSize: '0.85rem', fontWeight: 700 }}>{dayNum}</span>
     </button>
   );
 };
@@ -77,8 +78,8 @@ export const CompletionCalendar: React.FC<CompletionCalendarProps> = ({ complete
     <div className="card" role="region" aria-label="Activity History Calendar">
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.85rem' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-          <CalendarIcon size={20} color="#a855f7" />
-          <h3 style={{ margin: 0, fontSize: '1.15rem', color: '#f8fafc' }}>Activity History</h3>
+          <CalendarIcon size={18} color="#6366f1" />
+          <h3 style={{ margin: 0, fontSize: '1.1rem', color: '#f8fafc', fontWeight: 700 }}>Activity History</h3>
         </div>
 
         <input
@@ -87,18 +88,18 @@ export const CompletionCalendar: React.FC<CompletionCalendarProps> = ({ complete
           onChange={(e) => setSelectedDate(e.target.value)}
           style={{
             background: 'rgba(15, 23, 42, 0.7)',
-            border: '1px solid rgba(168, 85, 247, 0.4)',
-            color: '#c084fc',
-            borderRadius: '8px',
+            border: '1px solid rgba(255, 255, 255, 0.1)',
+            color: '#cbd5e1',
+            borderRadius: '6px',
             padding: '0.25rem 0.5rem',
-            fontSize: '0.8rem',
+            fontSize: '0.78rem',
             cursor: 'pointer',
+            outline: 'none',
           }}
           aria-label="Pick date"
         />
       </div>
 
-      {/* Sleek 7-Day Compact Strip with Highlighted Today Pill */}
       <div style={{ display: 'flex', gap: '0.35rem', marginBottom: '0.75rem' }}>
         {last7Days.map(({ dateStr, dayName, dayNum }) => (
           <DayPill
@@ -113,32 +114,31 @@ export const CompletionCalendar: React.FC<CompletionCalendarProps> = ({ complete
         ))}
       </div>
 
-      {/* Scrollable Selected Date Summary Panel */}
-      <div style={{ background: 'rgba(15, 23, 42, 0.6)', borderRadius: '12px', padding: '0.85rem 1rem', border: '1px solid rgba(255,255,255,0.08)', flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem', borderBottom: '1px solid rgba(255,255,255,0.05)', paddingBottom: '0.35rem' }}>
-          <span style={{ fontSize: '0.85rem', fontWeight: 700, color: '#f8fafc' }}>
+      <div style={{ background: 'rgba(15, 23, 42, 0.5)', borderRadius: '10px', padding: '0.85rem 1rem', border: '1px solid rgba(255,255,255,0.05)', flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.45rem', borderBottom: '1px solid rgba(255,255,255,0.05)', paddingBottom: '0.35rem' }}>
+          <span style={{ fontSize: '0.82rem', fontWeight: 600, color: '#f8fafc' }}>
             Date: {selectedDate} {selectedDate === todayStr ? '(Today)' : ''}
           </span>
           {selectedRecord && (
-            <span style={{ fontSize: '0.75rem', color: '#a855f7', display: 'flex', alignItems: 'center', gap: '0.25rem', fontWeight: 700 }}>
-              <Clock size={14} /> {selectedRecord.focusMinutes} mins focused
+            <span style={{ fontSize: '0.75rem', color: '#818cf8', display: 'flex', alignItems: 'center', gap: '0.25rem', fontWeight: 600 }}>
+              <Clock size={13} /> {selectedRecord.focusMinutes} mins focused
             </span>
           )}
         </div>
 
         <div className="scrollable-list">
           {!selectedRecord || selectedRecord.completedTasks.length === 0 ? (
-            <p style={{ margin: 0, fontSize: '0.85rem', color: '#94a3b8', textAlign: 'center', paddingTop: '1rem' }}>
+            <p style={{ margin: 0, fontSize: '0.82rem', color: '#94a3b8', textAlign: 'center', paddingTop: '1rem' }}>
               No completed tasks recorded for this date.
             </p>
           ) : (
             <div>
-              <div style={{ fontSize: '0.8rem', color: '#cbd5e1', marginBottom: '0.5rem', fontWeight: 600 }}>
+              <div style={{ fontSize: '0.78rem', color: '#94a3b8', marginBottom: '0.45rem', fontWeight: 600 }}>
                 Completed Items ({selectedRecord.completedTasks.length}):
               </div>
               {selectedRecord.completedTasks.map((t, idx) => (
-                <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.85rem', color: '#34d399', marginBottom: '0.35rem', background: 'rgba(52, 211, 153, 0.08)', padding: '0.35rem 0.6rem', borderRadius: '6px' }}>
-                  <CheckCircle2 size={15} /> {t}
+                <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: '0.45rem', fontSize: '0.82rem', color: '#34d399', marginBottom: '0.35rem', background: 'rgba(16, 185, 129, 0.08)', padding: '0.35rem 0.6rem', borderRadius: '6px', border: '1px solid rgba(16, 185, 129, 0.15)' }}>
+                  <CheckCircle2 size={14} /> {t}
                 </div>
               ))}
             </div>
