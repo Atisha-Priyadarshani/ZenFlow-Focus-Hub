@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { CheckCircle2, Circle, Trash2, Plus, AlertTriangle } from 'lucide-react';
 
 export interface Task {
@@ -36,6 +36,14 @@ export const TaskManager: React.FC<TaskManagerProps> = ({ onTaskCompleted }) => 
     } catch (e) {
       console.error('Failed to save tasks to localStorage', e);
     }
+  }, [tasks]);
+
+  // Sort tasks so uncompleted items stay at the top and completed items move to the bottom
+  const sortedTasks = useMemo(() => {
+    return [...tasks].sort((a, b) => {
+      if (a.completed === b.completed) return 0;
+      return a.completed ? 1 : -1;
+    });
   }, [tasks]);
 
   const addTask = (e: React.FormEvent) => {
@@ -119,7 +127,7 @@ export const TaskManager: React.FC<TaskManagerProps> = ({ onTaskCompleted }) => 
 
       {taskToDelete && (
         <div className="delete-banner" role="alert">
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.85rem', color: '#f87171' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.85rem', color: '#ef4444', fontWeight: 600 }}>
             <AlertTriangle size={18} /> Delete task: {taskToDelete.title.slice(0, 20)}?
           </div>
           <div style={{ display: 'flex', gap: '0.5rem' }}>
@@ -131,7 +139,7 @@ export const TaskManager: React.FC<TaskManagerProps> = ({ onTaskCompleted }) => 
             </button>
             <button
               onClick={() => setTaskToDelete(null)}
-              style={{ background: 'rgba(255,255,255,0.1)', color: 'var(--text-main)', border: 'none', borderRadius: '6px', padding: '0.25rem 0.6rem', fontSize: '0.8rem', cursor: 'pointer' }}
+              style={{ background: 'var(--bg-input)', color: 'var(--text-main)', border: '1px solid var(--border-card)', borderRadius: '6px', padding: '0.25rem 0.6rem', fontSize: '0.8rem', cursor: 'pointer' }}
             >
               Cancel
             </button>
@@ -140,28 +148,28 @@ export const TaskManager: React.FC<TaskManagerProps> = ({ onTaskCompleted }) => 
       )}
 
       <div className="scrollable-list">
-        {tasks.length === 0 ? (
+        {sortedTasks.length === 0 ? (
           <p style={{ textAlign: 'center', color: 'var(--text-dim)', fontSize: '0.85rem', padding: '1rem 0' }}>
             No tasks added yet. Stay focused and add your first objective!
           </p>
         ) : (
-          tasks.map((task) => (
+          sortedTasks.map((task) => (
             <div key={task.id} className="task-item">
               <div
                 style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', cursor: 'pointer', flex: 1 }}
                 onClick={() => toggleTask(task.id)}
               >
                 {task.completed ? (
-                  <CheckCircle2 size={18} color="#ec4899" />
+                  <CheckCircle2 size={18} color="var(--accent-color)" />
                 ) : (
                   <Circle size={18} color="var(--text-dim)" />
                 )}
-                <span className={task.completed ? 'task-completed' : ''} style={{ fontSize: '0.9rem' }}>
+                <span className={task.completed ? 'task-completed' : ''} style={{ fontSize: '0.9rem', color: task.completed ? 'var(--text-dim)' : 'var(--text-main)' }}>
                   {task.title}
                 </span>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                <span style={{ fontSize: '0.7rem', padding: '0.2rem 0.5rem', background: 'rgba(244, 114, 182, 0.15)', color: '#f472b6', borderRadius: '6px', fontWeight: 600 }}>
+                <span style={{ fontSize: '0.7rem', padding: '0.2rem 0.5rem', background: 'var(--badge-bg)', color: 'var(--text-muted)', borderRadius: '6px', fontWeight: 700 }}>
                   {task.category}
                 </span>
                 <button

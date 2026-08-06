@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Flame, Plus, Check, Trash2 } from 'lucide-react';
 
 export interface Habit {
@@ -98,6 +98,14 @@ export const HabitTracker: React.FC<HabitTrackerProps> = ({ onHabitCompleted }) 
     }
   }, [habits]);
 
+  // Sort habits so uncompleted items stay at the top and completed items move to the bottom
+  const sortedHabits = useMemo(() => {
+    return [...habits].sort((a, b) => {
+      if (a.completedToday === b.completedToday) return 0;
+      return a.completedToday ? 1 : -1;
+    });
+  }, [habits]);
+
   const handleAddHabit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!name.trim()) return;
@@ -184,12 +192,12 @@ export const HabitTracker: React.FC<HabitTrackerProps> = ({ onHabitCompleted }) 
       )}
 
       <div className="scrollable-list">
-        {habits.length === 0 ? (
+        {sortedHabits.length === 0 ? (
           <p style={{ textAlign: 'center', color: 'var(--text-dim)', fontSize: '0.85rem', padding: '1rem 0' }}>
             No habits added yet. Click &quot;Add Habit&quot; to build your daily streak!
           </p>
         ) : (
-          habits.map((h) => (
+          sortedHabits.map((h) => (
             <HabitRow
               key={h.id}
               habit={h}
