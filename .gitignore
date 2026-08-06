@@ -1,0 +1,16 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# Node dependencies & build outputs
+node_modules
+ZenFlow/node_modules
+ZenFlow/dist
+ZenFlow/dist-ssr
+*.local
+
+# Editor files
+.vscode/*
+.idea
+.DS_Store
