@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Flower2, Quote, RefreshCw, Sun, Moon, LayoutDashboard, CheckSquare, Flame, Calendar, Activity, Palette, Sliders } from 'lucide-react';
+import { Flower2, Quote, RefreshCw, Sun, Moon, LayoutDashboard, CheckSquare, Flame, Calendar, Activity } from 'lucide-react';
 
 const MOTIVATION_QUOTES = [
   "Discipline equals freedom.",
@@ -44,8 +44,6 @@ export function Navbar() {
     { href: '/habits', label: 'Habits', icon: Flame },
     { href: '/history', label: 'History', icon: Calendar },
     { href: '/health', label: 'Health', icon: Activity },
-    { href: '/identity-kit', label: 'Identity Kit', icon: Palette },
-    { href: '/curation', label: 'Curation', icon: Sliders },
   ];
 
   return (
@@ -64,15 +62,15 @@ export function Navbar() {
           </div>
         </div>
 
-        {/* Navigation Tabs */}
-        <nav className="flex items-center gap-1 bg-[var(--bg-input)] border border-[var(--border-card)] p-1.5 rounded-xl overflow-x-auto max-w-full">
+        {/* Navigation Tabs - Sleek & Uncluttered */}
+        <nav className="flex items-center gap-1 bg-[var(--bg-input)] border border-[var(--border-card)] p-1.5 rounded-xl">
           {navLinks.map(({ href, label, icon: Icon }) => {
             const isActive = pathname === href;
             return (
               <Link
                 key={href}
                 href={href}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs md:text-sm font-bold transition-all ${
+                className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs md:text-sm font-bold transition-all ${
                   isActive
                     ? 'bg-gradient-to-r from-[#f472b6] to-[#ec4899] text-white shadow-md'
                     : 'text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--badge-bg)]'
