@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Through-Line: Content Map &amp; CTAs — Atisha Priyadarshani</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-page: #120A14;
+      --bg-card: rgba(40, 20, 48, 0.6);
+      --border-card: rgba(244, 114, 182, 0.2);
+      --text-main: #FFF1F2;
+      --text-muted: #F472B6;
+      --accent: #EC4899;
+      --badge-bg: rgba(244, 114, 182, 0.15);
+      --green-bg: rgba(16, 185, 129, 0.15);
+      --amber-bg: rgba(245, 158, 11, 0.15);
+    }
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: radial-gradient(circle at 50% -10%, #3b163e 0%, #1a0c1e 50%, #120a14 85%);
+      color: var(--text-main);
+      margin: 0;
+      padding: 2.5rem 1.5rem;
+      min-height: 100vh;
+      box-sizing: border-box;
+    }
+    .container {
+      max-width: 860px;
+      margin: 0 auto;
+      background: rgba(25, 12, 30, 0.9);
+      border: 1px solid var(--border-card);
+      border-radius: 24px;
+      padding: 2.5rem;
+      box-shadow: 0 30px 60px rgba(0,0,0,0.6);
+      backdrop-filter: blur(12px);
+    }
+    .badge {
+      display: inline-block;
+      background: var(--badge-bg);
+      border: 1px solid var(--border-card);
+      color: var(--text-muted);
+      font-size: 0.75rem;
+      font-weight: 800;
+      padding: 0.35rem 0.85rem;
+      border-radius: 9999px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    h1 {
+      font-size: 2.2rem;
+      font-weight: 800;
+      margin: 0.75rem 0 0.25rem 0;
+      background: linear-gradient(135deg, #fbcfe8, #f472b6, #ec4899);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .subtitle {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      font-weight: 600;
+      margin-bottom: 2rem;
+      border-bottom: 1px solid var(--border-card);
+      padding-bottom: 1.5rem;
+    }
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-card);
+      border-radius: 16px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    .card-title {
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: var(--text-muted);
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .claim-box {
+      background: rgba(244,114,182,0.1);
+      border: 1.5px solid var(--accent);
+      border-radius: 16px;
+      padding: 1.5rem;
+      font-size: 1.15rem;
+      font-weight: 800;
+      line-height: 1.5;
+      color: #FFF;
+      text-align: center;
+      box-shadow: 0 10px 25px rgba(236,72,153,0.15);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+      text-align: left;
+    }
+    th, td {
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--border-card);
+    }
+    th {
+      color: var(--text-muted);
+      font-weight: 800;
+      text-transform: uppercase;
+      font-size: 0.75rem;
+      background: rgba(20,10,25,0.4);
+    }
+    .status-done {
+      background: var(--green-bg);
+      color: #10b981;
+      font-size: 0.75rem;
+      font-weight: 800;
+      padding: 0.25rem 0.5rem;
+      border-radius: 6px;
+      display: inline-block;
+    }
+    .status-pending {
+      background: var(--amber-bg);
+      color: #f59e0b;
+      font-size: 0.75rem;
+      font-weight: 800;
+      padding: 0.25rem 0.5rem;
+      border-radius: 6px;
+      display: inline-block;
+    }
+    .footer-text {
+      text-align: center;
+      font-size: 0.8rem;
+      color: rgba(255,241,242,0.5);
+      margin-top: 2rem;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="badge">General AI Fluency — Week 3 Assignment</div>
+    <h1>The Through-Line: Map Content &amp; CTAs</h1>
+    <div class="subtitle">Portfolio Architecture, Section Order &amp; Proof Inventory for Atisha Priyadarshani</div>
+
+    <!-- One-Line Claim -->
+    <div class="card">
+      <div class="card-title">🎯 The One-Line Claim</div>
+      <div class="claim-box">
+        &ldquo;I engineer production-grade Next.js focus &amp; analytical workspaces powered by disciplined AI workflows and quantitative precision.&rdquo;
+      </div>
+    </div>
+
+    <!-- Content Map Table -->
+    <div class="card">
+      <div class="card-title">🗺️ Content Map &amp; Call to Action (CTA) Hierarchy</div>
+      <table>
+        <thead>
+          <tr>
+            <th>Page</th>
+            <th>Ordered Sections</th>
+            <th>Featured Case Study</th>
+            <th>Call to Action (CTA)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Home (`/`)</strong></td>
+            <td>1. Hero Banner<br>2. Lead Flagship Case<br>3. Secondary Case<br>4. Live Diagnostics</td>
+            <td>ZenFlow Focus Hub (Next.js 15 App Router)</td>
+            <td><strong>&ldquo;Schedule Technical Interview&rdquo;</strong> &rarr; Contact Form</td>
+          </tr>
+          <tr>
+            <td><strong>ZenFlow Case (`/zenflow`)</strong></td>
+            <td>1. Context &amp; Problem<br>2. AI Prompting Log<br>3. Next.js Migration<br>4. Vitest Proof</td>
+            <td>ZenFlow Focus Hub</td>
+            <td><strong>&ldquo;Try Live ZenFlow App&rdquo;</strong> &rarr; https://zen-flow-blush.vercel.app</td>
+          </tr>
+          <tr>
+            <td><strong>Vitta Case (`/vitta`)</strong></td>
+            <td>1. Financial SLA Logic<br>2. Custom Hooks<br>3. Vitest Validation</td>
+            <td>Vitta Financial Analytics</td>
+            <td><strong>&ldquo;Review Source Code&rdquo;</strong> &rarr; GitHub Repo Link</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Still Need to Gather List -->
+    <div class="card">
+      <div class="card-title">📋 &ldquo;Still Need to Gather&rdquo; List (Honest Proof Inventory)</div>
+      <table>
+        <thead>
+          <tr>
+            <th>Proof Asset Item</th>
+            <th>Current Status</th>
+            <th>Action Plan Before Build Week</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Vercel Live Preview URL</td>
+            <td><span class="status-done">✅ COMPLETE</span></td>
+            <td>Deployed live at https://zen-flow-blush.vercel.app/</td>
+          </tr>
+          <tr>
+            <td>Vitest Unit Test Proof</td>
+            <td><span class="status-done">✅ COMPLETE</span></td>
+            <td>3/3 passing tests in ZenFlow, 2/2 in Vitta</td>
+          </tr>
+          <tr>
+            <td>Lighthouse Performance Score</td>
+            <td><span class="status-pending">⏳ IN PROGRESS</span></td>
+            <td>Run Lighthouse audit on production build during Build Week</td>
+          </tr>
+          <tr>
+            <td>Peer Testimonial / Review</td>
+            <td><span class="status-pending">⏳ PENDING</span></td>
+            <td>Collect feedback from FlyRank peer review track thread</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="footer-text">
+      Atisha Priyadarshani &bull; FlyRank General AI Fluency Task 5 &bull; Live App: https://zen-flow-blush.vercel.app/
+    </div>
+  </div>
+</body>
+</html>
