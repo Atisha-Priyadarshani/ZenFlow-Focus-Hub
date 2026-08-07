@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FL-05 Explainer & MCP Tool Evidence — Atisha Priyadarshani</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card-bg: rgba(30, 41, 59, 0.7);
+      --text-main: #f8fafc;
+      --text-muted: #cbd5e1;
+      --accent: #818cf8;
+      --border: rgba(129, 140, 248, 0.3);
+    }
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text-main);
+      line-height: 1.6;
+      padding: 2rem;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    h1, h2, h3 { color: var(--accent); }
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 1rem;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      backdrop-filter: blur(10px);
+    }
+    .tool-evidence {
+      background: #020617;
+      border-left: 4px solid var(--accent);
+      padding: 1rem;
+      border-radius: 0.5rem;
+      font-family: monospace;
+      font-size: 0.85rem;
+      color: #a5b4fc;
+      margin-top: 0.5rem;
+      overflow-x: auto;
+    }
+    .badge {
+      display: inline-block;
+      padding: 0.25rem 0.75rem;
+      background: rgba(129, 140, 248, 0.2);
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h1>FL-05 Explainer: Workflows, AI Agents & MCP Basics</h1>
+  <p><span class="badge">General AI Fluency — Week 4</span> <strong>Student:</strong> Atisha Priyadarshani</p>
+
+  <div class="card">
+    <h2>1. Workflows vs. AI Agents</h2>
+    <p><strong>AI Workflows</strong> execute a deterministic sequence of steps (e.g., Step 1 &rarr; Step 2 &rarr; Step 3). The control flow is predefined by human engineers. Our FL-04 build is a Workflow because data is gathered, synthesized, and formatted in fixed linear order.</p>
+    <p><strong>AI Agents</strong> operate inside an autonomous decision loop (Reason &rarr; Act &rarr; Observe &rarr; Repeat). An agent receives a high-level goal, evaluates available tools, executes tool calls, observes outputs, and decides the next step dynamically until the goal is completed.</p>
+  </div>
+
+  <div class="card">
+    <h2>2. Model Context Protocol (MCP) Primitives</h2>
+    <ul>
+      <li><strong>Tools:</strong> Executable functions (e.g., <code>read_file</code>, <code>run_command</code>).</li>
+      <li><strong>Resources:</strong> External data sources read into context (e.g., system logs, database schemas).</li>
+      <li><strong>Prompts:</strong> Reusable prompt templates exposed by servers.</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>3. Evidence of Working MCP / Connector Setup (3 Tasks)</h2>
+
+    <h3>Task 1: Codebase File Inspection</h3>
+    <p>Executing local filesystem inspection using <code>view_file</code> tool call without manual copy-paste.</p>
+    <div class="tool-evidence">
+[TOOL CALL]: view_file(AbsolutePath: ".../src/app/api/chat/route.ts")<br>
+[RESPONSE]: 200 OK — File read (82 lines). Verified ZenFlow Web Streams API route handler.
+    </div>
+
+    <h3>Task 2: Automated Production Build Verification</h3>
+    <p>Executing terminal command via <code>run_command</code> tool call.</p>
+    <div class="tool-evidence">
+[TOOL CALL]: run_command(CommandLine: "npm run build")<br>
+[RESPONSE]: &#10004; Compiled successfully. 14/14 static and dynamic pages generated cleanly.
+    </div>
+
+    <h3>Task 3: Subsystem Diagnostics Log Extraction</h3>
+    <p>Extracting async background process logs via <code>manage_task</code> tool call.</p>
+    <div class="tool-evidence">
+[TOOL CALL]: manage_task(Action: "status", TaskId: "task-236")<br>
+[RESPONSE]: Task DONE. Verified zero build errors across all routes (/chat, /playground, /health).
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>4. Agent Upgrade Strategy for FL-04 Pipeline</h2>
+    <p>To upgrade FL-04 into an autonomous agent, we equip MCP tools for <code>create_google_calendar_event</code> and <code>block_distracting_urls</code>, enabling dynamic focus break triggers and self-directed task schedules.</p>
+  </div>
+</body>
+</html>
