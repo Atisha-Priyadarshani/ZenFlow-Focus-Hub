@@ -5,44 +5,50 @@
   font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
-/* Dark Cherry Blossom Mode */
+/* ==========================================================================
+   DARK MODE — Deep Obsidian Cherry Blossom Palette
+   ========================================================================== */
 body.dark-mode {
-  --bg-page: radial-gradient(circle at 50% -10%, #3b163e 0%, #1a0c1e 50%, #120a14 85%);
-  --bg-app: rgba(30, 16, 35, 0.92);
-  --bg-card: rgba(40, 20, 48, 0.45);
-  --bg-input: rgba(20, 10, 25, 0.7);
-  --border-app: rgba(244, 114, 182, 0.22);
-  --border-card: rgba(244, 114, 182, 0.18);
+  --bg-page: #140916;
+  --bg-app: rgba(30, 15, 33, 0.85);
+  --bg-card: rgba(45, 20, 50, 0.45);
+  --bg-input: #1a0b1d;
+  --border-app: rgba(244, 114, 182, 0.2);
+  --border-card: rgba(244, 114, 182, 0.16);
   --text-main: #fff1f2;
   --text-muted: #f472b6;
   --text-dim: #fda4af;
-  --shadow-app: 0 30px 60px -15px rgba(18, 10, 20, 0.9);
+  --shadow-app: 0 20px 50px -10px rgba(0, 0, 0, 0.7);
   --pill-active-bg: linear-gradient(135deg, #f472b6, #ec4899);
   --badge-bg: rgba(244, 114, 182, 0.15);
   --accent-color: #f472b6;
-  --sub-panel-bg: rgba(20, 10, 25, 0.6);
-  --chat-bg: #1a0c1e;
-  --chat-msg-bot: rgba(40, 20, 48, 0.5);
+  --sub-panel-bg: rgba(30, 12, 33, 0.6);
+  --chat-bg: #130815;
+  --chat-msg-bot: rgba(45, 20, 50, 0.6);
+  --card-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.5);
 }
 
-/* Light Cherry Blossom Mode */
+/* ==========================================================================
+   LIGHT MODE — Ultra-Clean Crisp Slate & Rose Blossom Palette (Maximum Readability)
+   ========================================================================== */
 body.light-mode {
-  --bg-page: radial-gradient(circle at 50% 0%, #fce7f3 0%, #fff1f2 60%, #fff5f7 100%);
-  --bg-app: rgba(255, 255, 255, 0.95);
+  --bg-page: #faf5f8;
+  --bg-app: #ffffff;
   --bg-card: #ffffff;
   --bg-input: #fdf2f8;
-  --border-app: rgba(236, 72, 153, 0.3);
-  --border-card: rgba(236, 72, 153, 0.2);
-  --text-main: #701a75;
-  --text-muted: #be185d;
-  --text-dim: #9d174d;
-  --shadow-app: 0 20px 40px -10px rgba(236, 72, 153, 0.15);
+  --border-app: #cbd5e1;
+  --border-card: #e2e8f0;
+  --text-main: #0f172a; /* Deep Charcoal for Maximum Readability */
+  --text-muted: #334155; /* Dark Slate Subtext */
+  --text-dim: #db2777; /* Rich Rose Accent */
+  --shadow-app: 0 10px 30px -5px rgba(0, 0, 0, 0.06);
   --pill-active-bg: linear-gradient(135deg, #ec4899, #db2777);
-  --badge-bg: rgba(236, 72, 153, 0.14);
+  --badge-bg: #fce7f3;
   --accent-color: #db2777;
-  --sub-panel-bg: #fdf2f8;
+  --sub-panel-bg: #f8fafc;
   --chat-bg: #ffffff;
-  --chat-msg-bot: #fdf2f8;
+  --chat-msg-bot: #f1f5f9;
+  --card-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05);
 }
 
 * {
@@ -54,9 +60,10 @@ body {
   min-height: 100vh;
   background: var(--bg-page);
   color: var(--text-main);
-  transition: background 0.3s ease, color 0.3s ease;
+  transition: background 0.25s ease, color 0.25s ease;
 }
 
+/* Base Card Styling with Dynamic Theme Support */
 .zenflow-card {
   background: var(--bg-card);
   border: 1px solid var(--border-card);
@@ -64,11 +71,12 @@ body {
   padding: 1.5rem;
   transition: all 0.22s ease;
   color: var(--text-main);
+  box-shadow: var(--card-shadow);
 }
 
 .zenflow-card:hover {
   border-color: var(--accent-color);
-  box-shadow: 0 12px 30px -10px rgba(236, 72, 153, 0.2);
+  box-shadow: 0 12px 30px -10px rgba(236, 72, 153, 0.15);
 }
 
 .scrollable-list {
