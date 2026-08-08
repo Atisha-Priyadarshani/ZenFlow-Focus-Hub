@@ -63,18 +63,18 @@ export function Navbar() {
   ];
 
   return (
-    <header className="w-full bg-[var(--bg-app)] border-b border-[var(--border-app)] backdrop-blur-xl sticky top-0 z-50 px-4 md:px-8 py-3.5 transition-all">
+    <header className="w-full bg-[var(--bg-app)] border-b border-[var(--border-app)] backdrop-blur-xl sticky top-0 z-50 px-4 md:px-8 py-3.5 transition-all shadow-sm">
       <div className="max-w-6xl mx-auto flex items-center justify-between">
-        {/* Brand Logo & Subtitle */}
+        {/* Brand Logo & Subtitle — Perfect Flex Alignment & High-Contrast Gradient */}
         <Link href="/" className="flex items-center gap-2.5 group">
-          <div className="p-1.5 rounded-xl bg-pink-500/10 border border-pink-500/20 group-hover:scale-105 transition-transform">
+          <div className="p-2 rounded-xl bg-pink-500/10 border border-pink-500/20 group-hover:scale-105 transition-transform flex items-center justify-center shrink-0">
             <Flower2 className="w-6 h-6 md:w-7 md:h-7 text-[#ec4899]" />
           </div>
-          <div>
-            <span className="text-xl md:text-2xl font-extrabold tracking-tight bg-gradient-to-r from-[#fbcfe8] via-[#f472b6] to-[#ec4899] bg-clip-text text-transparent">
+          <div className="flex items-center gap-2">
+            <span className="text-xl md:text-2xl font-extrabold tracking-tight bg-gradient-to-r from-[#db2777] via-[#ec4899] to-[#be185d] dark:from-[#fbcfe8] dark:via-[#f472b6] dark:to-[#ec4899] bg-clip-text text-transparent">
               ZenFlow
             </span>
-            <span className="hidden sm:inline-block text-[10px] font-semibold text-[#ec4899] ml-2 px-1.5 py-0.5 rounded bg-pink-500/10 border border-pink-500/20">
+            <span className="hidden sm:inline-flex items-center text-[10px] font-extrabold text-[#ec4899] px-2 py-0.5 rounded-full bg-pink-500/10 border border-pink-500/20 leading-none">
               Focus Hub
             </span>
           </div>
@@ -91,7 +91,7 @@ export function Navbar() {
                 className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-extrabold transition-all ${
                   isActive
                     ? 'bg-gradient-to-r from-[#f472b6] to-[#ec4899] text-white shadow-md'
-                    : 'text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--badge-bg)]'
+                    : 'text-[var(--text-main)] hover:text-[#ec4899] hover:bg-[var(--badge-bg)]'
                 }`}
               >
                 <Icon className="w-4 h-4" />
@@ -116,7 +116,7 @@ export function Navbar() {
           {mounted && (
             <button
               onClick={toggleTheme}
-              className="w-9 h-9 flex items-center justify-center rounded-xl bg-[var(--badge-bg)] border border-[var(--border-card)] text-[#ec4899] hover:border-[#ec4899] transition-all cursor-pointer"
+              className="w-9 h-9 flex items-center justify-center rounded-xl bg-[var(--badge-bg)] border border-[var(--border-card)] text-[#ec4899] hover:border-[#ec4899] transition-all cursor-pointer shadow-sm"
               aria-label="Toggle Light and Dark Mode"
               title={themeMode === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
             >
@@ -128,17 +128,17 @@ export function Navbar() {
             onClick={() => setMobileMenuOpen((prev) => !prev)}
             aria-expanded={mobileMenuOpen}
             aria-label="Toggle mobile menu navigation"
-            className="lg:hidden p-2 rounded-xl bg-[var(--badge-bg)] border border-[var(--border-card)] text-[#ec4899] hover:text-white transition-all focus:outline-none focus:ring-2 focus:ring-[#ec4899]"
+            className="lg:hidden p-2 rounded-xl bg-[var(--badge-bg)] border border-[var(--border-card)] text-[#ec4899] hover:text-[var(--text-main)] transition-all focus:outline-none focus:ring-2 focus:ring-[#ec4899]"
           >
             {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
         </div>
       </div>
 
-      {/* Mobile Drawer Dropdown Menu */}
+      {/* Mobile Drawer Dropdown Menu — Using CSS Theme Variables */}
       {mobileMenuOpen && (
         <div className="lg:hidden mt-3 pt-3 border-t border-[var(--border-card)] animate-fade-in">
-          <nav className="flex flex-col space-y-1 bg-slate-900/95 border border-slate-800 p-3 rounded-2xl shadow-2xl backdrop-blur-xl">
+          <nav className="flex flex-col space-y-1 bg-[var(--bg-app)] border border-[var(--border-card)] p-3 rounded-2xl shadow-2xl backdrop-blur-xl">
             {navLinks.map(({ href, label, icon: Icon }) => {
               const isActive = pathname === href;
               return (
@@ -149,7 +149,7 @@ export function Navbar() {
                   className={`flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-bold transition-all ${
                     isActive
                       ? 'bg-gradient-to-r from-[#f472b6] to-[#ec4899] text-white font-extrabold shadow-md'
-                      : 'text-slate-200 hover:bg-slate-800 hover:text-white'
+                      : 'text-[var(--text-main)] hover:bg-[var(--badge-bg)] hover:text-[#ec4899]'
                   }`}
                 >
                   <Icon className="w-4 h-4 text-[#ec4899]" />

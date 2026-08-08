@@ -8,11 +8,11 @@
 /* Dark Cherry Blossom Mode */
 body.dark-mode {
   --bg-page: radial-gradient(circle at 50% -10%, #3b163e 0%, #1a0c1e 50%, #120a14 85%);
-  --bg-app: rgba(30, 16, 35, 0.75);
+  --bg-app: rgba(30, 16, 35, 0.92);
   --bg-card: rgba(40, 20, 48, 0.45);
-  --bg-input: rgba(20, 10, 25, 0.6);
-  --border-app: rgba(244, 114, 182, 0.18);
-  --border-card: rgba(244, 114, 182, 0.14);
+  --bg-input: rgba(20, 10, 25, 0.7);
+  --border-app: rgba(244, 114, 182, 0.22);
+  --border-card: rgba(244, 114, 182, 0.18);
   --text-main: #fff1f2;
   --text-muted: #f472b6;
   --text-dim: #fda4af;
@@ -20,25 +20,29 @@ body.dark-mode {
   --pill-active-bg: linear-gradient(135deg, #f472b6, #ec4899);
   --badge-bg: rgba(244, 114, 182, 0.15);
   --accent-color: #f472b6;
-  --sub-panel-bg: rgba(20, 10, 25, 0.5);
+  --sub-panel-bg: rgba(20, 10, 25, 0.6);
+  --chat-bg: #1a0c1e;
+  --chat-msg-bot: rgba(40, 20, 48, 0.5);
 }
 
 /* Light Cherry Blossom Mode */
 body.light-mode {
   --bg-page: radial-gradient(circle at 50% 0%, #fce7f3 0%, #fff1f2 60%, #fff5f7 100%);
-  --bg-app: rgba(255, 255, 255, 0.9);
+  --bg-app: rgba(255, 255, 255, 0.95);
   --bg-card: #ffffff;
   --bg-input: #fdf2f8;
-  --border-app: rgba(236, 72, 153, 0.25);
-  --border-card: rgba(236, 72, 153, 0.18);
+  --border-app: rgba(236, 72, 153, 0.3);
+  --border-card: rgba(236, 72, 153, 0.2);
   --text-main: #701a75;
   --text-muted: #be185d;
   --text-dim: #9d174d;
   --shadow-app: 0 20px 40px -10px rgba(236, 72, 153, 0.15);
   --pill-active-bg: linear-gradient(135deg, #ec4899, #db2777);
-  --badge-bg: rgba(236, 72, 153, 0.12);
+  --badge-bg: rgba(236, 72, 153, 0.14);
   --accent-color: #db2777;
   --sub-panel-bg: #fdf2f8;
+  --chat-bg: #ffffff;
+  --chat-msg-bot: #fdf2f8;
 }
 
 * {
@@ -59,6 +63,7 @@ body {
   border-radius: 20px;
   padding: 1.5rem;
   transition: all 0.22s ease;
+  color: var(--text-main);
 }
 
 .zenflow-card:hover {
