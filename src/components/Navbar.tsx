@@ -13,6 +13,7 @@ import {
   Bot,
   Code2,
   Activity,
+  User,
   Menu,
   X,
 } from 'lucide-react';
@@ -57,6 +58,7 @@ export function Navbar() {
 
   const navLinks = [
     { href: '/', label: 'Dashboard', icon: LayoutDashboard },
+    { href: '/portfolio', label: 'Portfolio (PF-04)', icon: User },
     { href: '/chat', label: 'AI Chat', icon: Bot },
     { href: '/playground', label: 'Playground', icon: Code2 },
     { href: '/health', label: 'Health', icon: Activity },
@@ -65,7 +67,7 @@ export function Navbar() {
   return (
     <header className="w-full bg-[var(--bg-app)] border-b border-[var(--border-app)] backdrop-blur-xl sticky top-0 z-50 px-4 md:px-8 py-3.5 transition-all shadow-sm">
       <div className="max-w-6xl mx-auto flex items-center justify-between">
-        {/* Brand Logo & Subtitle — Ultra Crisp Contrast & Flex Alignment */}
+        {/* Brand Logo & Subtitle */}
         <Link href="/" className="flex items-center gap-3 group">
           <div className="p-2 rounded-xl bg-pink-500/10 border border-pink-500/20 group-hover:scale-105 transition-transform flex items-center justify-center shrink-0">
             <Flower2 className="w-6 h-6 md:w-7 md:h-7 text-[#db2777] dark:text-[#ec4899]" />
@@ -88,7 +90,7 @@ export function Navbar() {
               <Link
                 key={href}
                 href={href}
-                className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-extrabold transition-all ${
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-extrabold transition-all ${
                   isActive
                     ? 'bg-gradient-to-r from-[#f472b6] to-[#ec4899] text-white shadow-md'
                     : 'text-[var(--text-main)] hover:text-[#db2777] dark:hover:text-[#ec4899] hover:bg-[var(--badge-bg)]'
@@ -101,7 +103,7 @@ export function Navbar() {
           })}
         </nav>
 
-        {/* Right Section: Quote Pill & Theme Toggle & Mobile Hamburger */}
+        {/* Right Section */}
         <div className="flex items-center gap-2.5">
           <button
             onClick={rotateQuote}
