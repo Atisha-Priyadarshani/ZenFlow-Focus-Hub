@@ -1,5 +1,12 @@
 import { NextRequest } from 'next/server';
+import dns from 'dns';
 import { ZENFLOW_AI_SYSTEM_PROMPT } from '@/lib/aiConfig';
+
+try {
+  dns.setDefaultResultOrder('ipv4first');
+} catch (e) {
+  // Ignore if not supported
+}
 
 export const runtime = 'nodejs';
 
@@ -24,30 +31,49 @@ export async function POST(req: NextRequest) {
         let aiResponseText = '';
 
         if (apiKey && apiKey !== 'your_gemini_api_key_here') {
-          try {
-            const response = await fetch(
-              `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
-              {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                  contents: [
-                    {
-                      role: 'user',
-                      parts: [{ text: `${ZENFLOW_AI_SYSTEM_PROMPT}\n\nUser Question: ${lastMessage}` }],
-                    },
-                  ],
-                }),
-              }
-            );
+          const modelsToTry = [
+            'gemini-1.5-flash-latest',
+            'gemini-2.0-flash',
+            'gemini-1.5-pro-latest',
+            'gemini-1.5-flash',
+          ];
 
-            if (response.ok) {
-              const data = await response.json();
-              aiResponseText =
-                data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+          for (const model of modelsToTry) {
+            try {
+              console.log(`[DEBUG] Trying Gemini model (${model}) with key starting:`, apiKey.substring(0, 6));
+              const response = await fetch(
+                `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`,
+                {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({
+                    contents: [
+                      {
+                        role: 'user',
+                        parts: [{ text: `${ZENFLOW_AI_SYSTEM_PROMPT}\n\nUser Question: ${lastMessage}` }],
+                      },
+                    ],
+                  }),
+                }
+              );
+
+              console.log(`[DEBUG] Model ${model} HTTP status:`, response.status);
+
+              if (response.ok) {
+                const data = await response.json();
+                aiResponseText =
+                  data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+                if (aiResponseText) {
+                  console.log(`[DEBUG] Success with model ${model}! Response length:`, aiResponseText.length);
+                  break;
+                }
+              } else {
+                const errBody = await response.text();
+                console.error(`[DEBUG] Model ${model} Error Response:`, errBody);
+              }
+            } catch (err) {
+              console.error(`[DEBUG] Model ${model} fetch exception:`, err);
             }
-          } catch (err) {
-            console.error('Gemini API fetch error:', err);
           }
         }
 
