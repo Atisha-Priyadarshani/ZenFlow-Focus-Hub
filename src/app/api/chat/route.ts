@@ -37,53 +37,62 @@ export async function POST(req: NextRequest) {
               `https://generativelanguage.googleapis.com/v1beta/models?key=${apiKey}`
             );
 
-            let targetModel = 'gemini-1.5-flash';
+            let candidatesToTry: string[] = ['gemini-3.5-flash', 'gemini-3.6-flash', 'gemini-3.7-flash', 'gemini-2.5-flash'];
 
             if (listRes.ok) {
               const listData = await listRes.json();
-              const availableModels: string[] = (listData.models || [])
+              const discovered = (listData.models || [])
                 .map((m: any) => m.name?.replace('models/', ''))
-                .filter((name: string) => name.includes('gemini') && !name.includes('embedding') && !name.includes('imagen'));
+                .filter((name: string) => name.includes('gemini') && !name.includes('embedding') && !name.includes('imagen') && !name.includes('audio') && !name.includes('tts'));
 
-              console.log('[DEBUG] Discovered available Gemini models:', availableModels);
-
-              targetModel =
-                availableModels.find((m) => m.includes('2.0') || m.includes('flash') || m.includes('pro')) ||
-                availableModels[0] ||
-                'gemini-1.5-flash';
+              console.log('[DEBUG] Discovered available Gemini models:', discovered);
+              if (discovered.length > 0) {
+                candidatesToTry = [
+                  ...discovered.filter((m) => m.includes('3.5') || m.includes('3.6') || m.includes('3.7')),
+                  ...discovered,
+                ];
+              }
             } else {
               const listErr = await listRes.text();
               console.error('[DEBUG] ListModels error response:', listErr);
             }
 
-            console.log('[DEBUG] Selected Gemini Model:', targetModel);
+            for (const model of candidatesToTry) {
+              try {
+                console.log(`[DEBUG] Attempting generation with model: ${model}`);
+                const response = await fetch(
+                  `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`,
+                  {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                      contents: [
+                        {
+                          role: 'user',
+                          parts: [{ text: `${ZENFLOW_AI_SYSTEM_PROMPT}\n\nUser Question: ${lastMessage}` }],
+                        },
+                      ],
+                    }),
+                  }
+                );
 
-            const response = await fetch(
-              `https://generativelanguage.googleapis.com/v1beta/models/${targetModel}:generateContent?key=${apiKey}`,
-              {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                  contents: [
-                    {
-                      role: 'user',
-                      parts: [{ text: `${ZENFLOW_AI_SYSTEM_PROMPT}\n\nUser Question: ${lastMessage}` }],
-                    },
-                  ],
-                }),
+                console.log(`[DEBUG] Model ${model} HTTP status:`, response.status);
+
+                if (response.ok) {
+                  const data = await response.json();
+                  aiResponseText =
+                    data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+                  if (aiResponseText) {
+                    console.log(`[DEBUG] SUCCESS with ${model}! Response length:`, aiResponseText.length);
+                    break;
+                  }
+                } else {
+                  const errBody = await response.text();
+                  console.error(`[DEBUG] Model ${model} Error Response:`, errBody);
+                }
+              } catch (err) {
+                console.error(`[DEBUG] Exception trying model ${model}:`, err);
               }
-            );
-
-            console.log(`[DEBUG] Model ${targetModel} HTTP status:`, response.status);
-
-            if (response.ok) {
-              const data = await response.json();
-              aiResponseText =
-                data.candidates?.[0]?.content?.parts?.[0]?.text || '';
-              console.log(`[DEBUG] SUCCESS! Generated response length:`, aiResponseText.length);
-            } else {
-              const errBody = await response.text();
-              console.error(`[DEBUG] Model ${targetModel} Error Response:`, errBody);
             }
           } catch (err) {
             console.error('[DEBUG] Gemini API fetch exception:', err);
