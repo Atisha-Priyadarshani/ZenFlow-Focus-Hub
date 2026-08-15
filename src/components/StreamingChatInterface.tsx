@@ -1,51 +1,27 @@
 'use client';
 
-import React, { useState, useRef, useEffect } from 'react';
-import { Send, Square, ArrowDown, Bot, User, Sparkles, AlertCircle, RefreshCw, Zap } from 'lucide-react';
+import React, { useRef, useEffect } from 'react';
+import { useChat } from '@ai-sdk/react';
+import { Send, Square, ArrowDown, Bot, User, Sparkles } from 'lucide-react';
 import { TaskToolResultCard, ToolState } from './TaskToolResultCard';
-import { executeTaskPriorityAnalysis, TaskPriorityResult } from '@/lib/tools';
-
-export interface ChatMessage {
-  id: string;
-  role: 'user' | 'assistant';
-  content: string;
-  isStreaming?: boolean;
-  isError?: boolean;
-  toolCall?: {
-    state: ToolState;
-    input?: { taskTitle: string; estimatedMinutes: number; difficultyLevel: 'low' | 'medium' | 'high' | 'critical' };
-    result?: TaskPriorityResult;
-    error?: string;
-  };
-}
 
 export function StreamingChatInterface() {
-  const [messages, setMessages] = useState<ChatMessage[]>([]);
-  const [input, setInput] = useState('');
-  const [isGenerating, setIsGenerating] = useState(false);
-  const [isThinking, setIsThinking] = useState(false);
-  const [showScrollBottomBtn, setShowScrollBottomBtn] = useState(false);
-  const [sabotageMode, setSabotageMode] = useState<'none' | 'rate-limit' | 'mid-stream-break'>('none');
+  const { messages, input, handleInputChange, handleSubmit, isLoading, stop, append } = useChat({
+    api: '/api/chat',
+  });
 
   const scrollContainerRef = useRef<HTMLDivElement>(null);
-  const abortControllerRef = useRef<AbortController | null>(null);
   const userHasScrolledUpRef = useRef(false);
+  const [showScrollBottomBtn, setShowScrollBottomBtn] = React.useState(false);
 
   const sampleOnboardingPrompts = [
     {
-      title: '⚡ Generate Pomodoro Plan (Deep Code Audit)',
-      prompt: 'Generate Pomodoro focus plan for task: Deep Code Audit, estimated 120 minutes, difficulty high.',
-      isToolCall: true,
+      title: '🍅 Generate Pomodoro Focus Plan',
+      prompt: 'Create a focus plan for completing my React assignment (Estimated 120 mins, high difficulty).',
     },
     {
-      title: '🧘 Mindful Productivity Advice',
-      prompt: 'How can I maintain focus during 4-hour study sessions without burning out?',
-      isToolCall: false,
-    },
-    {
-      title: '🚨 Test FE-08 Error & Retry Boundary',
-      prompt: 'Test mid-stream error recovery.',
-      isSabotageTest: true,
+      title: '📈 Habit Consistency Review',
+      prompt: 'Give me 3 actionable recommendations to improve my daily meditation habit.',
     },
   ];
 
@@ -71,391 +47,178 @@ export function StreamingChatInterface() {
     if (!userHasScrolledUpRef.current) {
       scrollToBottom(false);
     }
-  }, [messages, isThinking]);
-
-  const handleStopStream = () => {
-    if (abortControllerRef.current) {
-      abortControllerRef.current.abort();
-      abortControllerRef.current = null;
-    }
-    setIsGenerating(false);
-    setIsThinking(false);
-
-    setMessages((prev) =>
-      prev.map((msg) => (msg.isStreaming ? { ...msg, isStreaming: false } : msg))
-    );
-  };
-
-  const executeChatFlow = async (textToSend: string, isRetry = false) => {
-    if (!textToSend.trim() || isGenerating) return;
-
-    userHasScrolledUpRef.current = false;
-
-    const userMsg: ChatMessage = {
-      id: `user-${Date.now()}`,
-      role: 'user',
-      content: textToSend,
-    };
-
-    const assistantMsgId = `assistant-${Date.now()}`;
-    const isToolTrigger = textToSend.toLowerCase().includes('generate pomodoro') || textToSend.toLowerCase().includes('task');
-
-    const initialAssistantMsg: ChatMessage = {
-      id: assistantMsgId,
-      role: 'assistant',
-      content: '',
-      isStreaming: true,
-      toolCall: isToolTrigger
-        ? {
-            state: 'input-streaming',
-            input: { taskTitle: 'Deep Code Audit', estimatedMinutes: 120, difficultyLevel: 'high' },
-          }
-        : undefined,
-    };
-
-    if (isRetry) {
-      setMessages((prev) => [...prev.filter((m) => !m.isError), userMsg, initialAssistantMsg]);
-    } else {
-      setMessages((prev) => [...prev, userMsg, initialAssistantMsg]);
-    }
-
-    setIsGenerating(true);
-    setIsThinking(true);
-
-    const controller = new AbortController();
-    abortControllerRef.current = controller;
-
-    try {
-      if (sabotageMode === 'rate-limit') {
-        await new Promise((r) => setTimeout(r, 600));
-        throw new Error('429 Too Many Requests: API rate limit exceeded. Please retry in a moment.');
-      }
-
-      if (isToolTrigger) {
-        await new Promise((r) => setTimeout(r, 800));
-        setMessages((prev) =>
-          prev.map((m) =>
-            m.id === assistantMsgId
-              ? {
-                  ...m,
-                  toolCall: {
-                    state: 'input-available',
-                    input: { taskTitle: 'Deep Code Audit', estimatedMinutes: 120, difficultyLevel: 'high' },
-                  },
-                }
-              : m
-          )
-        );
-
-        await new Promise((r) => setTimeout(r, 1000));
-        const toolResult = executeTaskPriorityAnalysis({
-          taskTitle: 'Deep Code Audit',
-          estimatedMinutes: 120,
-          difficultyLevel: 'high',
-          userEnergyLevel: 'high',
-        });
-
-        setMessages((prev) =>
-          prev.map((m) =>
-            m.id === assistantMsgId
-              ? {
-                  ...m,
-                  toolCall: {
-                    state: 'output-available',
-                    input: { taskTitle: 'Deep Code Audit', estimatedMinutes: 120, difficultyLevel: 'high' },
-                    result: toolResult,
-                  },
-                }
-              : m
-          )
-        );
-      }
-
-      const response = await fetch('/api/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          messages: [{ role: 'user', content: textToSend }],
-        }),
-        signal: controller.signal,
-      });
-
-      if (!response.ok || !response.body) {
-        throw new Error('Streaming server error (500 Internal Server Error)');
-      }
-
-      setIsThinking(false);
-      const reader = response.body.getReader();
-      const decoder = new TextDecoder();
-      let chunkCount = 0;
-
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-
-        chunkCount++;
-        if (sabotageMode === 'mid-stream-break' && chunkCount > 5) {
-          controller.abort();
-          throw new Error('Stream interrupted: Network connection killed mid-stream.');
-        }
-
-        const token = decoder.decode(value, { stream: true });
-        setMessages((prev) =>
-          prev.map((msg) =>
-            msg.id === assistantMsgId
-              ? { ...msg, content: msg.content + token }
-              : msg
-          )
-        );
-      }
-    } catch (err: any) {
-      if (err.name === 'AbortError' && sabotageMode === 'none') {
-        console.log('Stream stopped by user.');
-      } else {
-        setMessages((prev) =>
-          prev.map((msg) =>
-            msg.id === assistantMsgId
-              ? {
-                  ...msg,
-                  content: msg.content + `\n\n*(Error: ${err.message || 'Connection Interrupted'})*`,
-                  isError: true,
-                  toolCall: msg.toolCall
-                    ? { ...msg.toolCall, state: 'output-error', error: err.message }
-                    : undefined,
-                }
-              : msg
-          )
-        );
-      }
-    } finally {
-      setIsGenerating(false);
-      setIsThinking(false);
-      abortControllerRef.current = null;
-      setMessages((prev) =>
-        prev.map((msg) => (msg.id === assistantMsgId ? { ...msg, isStreaming: false } : msg))
-      );
-    }
-  };
-
-  const handleSendMessage = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!input.trim() || isGenerating) return;
-    const text = input.trim();
-    setInput('');
-    executeChatFlow(text);
-  };
+  }, [messages, isLoading]);
 
   return (
     <div className="flex flex-col h-[80dvh] max-h-[700px] w-full max-w-4xl mx-auto rounded-2xl bg-[var(--bg-app)] border border-[var(--border-app)] shadow-2xl overflow-hidden font-sans transition-colors duration-300">
-      <div className="flex flex-wrap items-center justify-between px-6 py-4 border-b border-[var(--border-card)] bg-[var(--bg-app)] gap-3">
+      
+      {/* Header */}
+      <div className="px-6 py-4 border-b border-[var(--border-app)] bg-[var(--bg-app)]/95 backdrop-blur-md flex items-center justify-between shrink-0">
         <div className="flex items-center gap-3">
-          <div className="p-2 rounded-xl bg-pink-500/10 text-[#ec4899] border border-pink-500/20">
-            <Bot className="w-5 h-5" />
+          <div className="w-10 h-10 rounded-full bg-indigo-500/10 flex items-center justify-center border border-indigo-500/20">
+            <Sparkles className="w-5 h-5 text-indigo-500" />
           </div>
           <div>
-            <h2 className="text-base font-extrabold text-[#ec4899] flex items-center gap-2">
-              ZenFlow Generative UI & Focus Assistant <Sparkles className="w-4 h-4 text-purple-400" />
-            </h2>
-            <p className="text-[11px] text-[var(--text-muted)] font-medium">
-              FE-07 Zod Tools & FE-08 Error Recovery (Checkpoint 1)
+            <h2 className="text-lg font-bold text-[var(--text-primary)]">ZenFlow AI Assistant</h2>
+            <p className="text-xs text-[var(--text-secondary)] font-medium flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-indigo-500 animate-pulse"></span>
+              Live SSE Streaming (Vercel AI SDK)
             </p>
           </div>
         </div>
-
-        <div className="flex items-center gap-2">
-          <span className="text-[10px] font-bold text-[var(--text-main)] flex items-center gap-1">
-            <Zap className="w-3 h-3 text-purple-400" /> Sabotage Mode:
-          </span>
-          <select
-            value={sabotageMode}
-            onChange={(e) => setSabotageMode(e.target.value as any)}
-            className="px-2.5 py-1 bg-[var(--bg-input)] border border-[var(--border-card)] rounded-lg text-[var(--text-main)] text-xs font-bold focus:outline-none focus:ring-1 focus:ring-[#ec4899]"
-          >
-            <option value="none">Off (Normal)</option>
-            <option value="rate-limit">Test 429 Error</option>
-            <option value="mid-stream-break">Test Mid-Stream Break</option>
-          </select>
-
-          {isGenerating && (
-            <button
-              onClick={handleStopStream}
-              className="flex items-center gap-1.5 px-3 py-1 rounded-lg bg-red-500/20 text-red-400 border border-red-500/40 text-xs font-bold hover:bg-red-500/30 transition-all"
-            >
-              <Square className="w-3.5 h-3.5 fill-current" /> Stop
-            </button>
-          )}
-        </div>
       </div>
 
+      {/* Chat History Area */}
       <div
         ref={scrollContainerRef}
         onScroll={handleScroll}
-        className="flex-1 overflow-y-auto p-6 space-y-4 relative scrollbar-thin scrollbar-thumb-pink-900"
+        className="flex-1 overflow-y-auto p-6 scroll-smooth space-y-6 relative"
       >
-        {messages.length === 0 && (
-          <div className="h-full flex flex-col justify-center items-center text-center space-y-6 max-w-md mx-auto py-12 animate-fade-in">
-            <div className="p-4 rounded-full bg-pink-500/10 border border-pink-500/20 text-[#ec4899]">
-              <Sparkles className="w-10 h-10 animate-pulse" />
-            </div>
-            <div>
-              <h3 className="text-lg font-extrabold text-[var(--text-main)]">
-                Welcome to ZenFlow Generative Focus Coach
-              </h3>
-              <p className="text-xs text-[var(--text-muted)] mt-1">
-                Ask a focus question or click a prompt below to trigger FE-07 Generative UI Zod tools and FE-08 error boundaries.
-              </p>
-            </div>
-
-            <div className="w-full space-y-2 text-left">
-              {sampleOnboardingPrompts.map((card, idx) => (
+        {messages.length === 0 ? (
+          <div className="h-full flex flex-col items-center justify-center text-[var(--text-secondary)] opacity-80 animate-in fade-in duration-700">
+            <Bot className="w-16 h-16 mb-4 text-indigo-500/40" />
+            <p className="text-sm font-medium">Hello! I am your productivity AI assistant.</p>
+            <p className="text-xs mt-1">Try triggering the focus plan tool below.</p>
+            
+            <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-4 w-full max-w-lg">
+              {sampleOnboardingPrompts.map((sample, idx) => (
                 <button
                   key={idx}
-                  onClick={() => {
-                    if (card.isSabotageTest) setSabotageMode('mid-stream-break');
-                    executeChatFlow(card.prompt);
-                  }}
-                  className="w-full p-3 rounded-xl bg-[var(--bg-input)] border border-[var(--border-card)] hover:border-[#ec4899] hover:bg-[var(--badge-bg)] transition-all group cursor-pointer"
+                  onClick={() => append({ role: 'user', content: sample.prompt })}
+                  className="p-3 text-left border border-[var(--border-app)] rounded-xl hover:bg-indigo-500/10 hover:border-indigo-500/30 transition-all text-xs group"
                 >
-                  <div className="text-xs font-bold text-[var(--text-main)] group-hover:text-[#ec4899] flex items-center justify-between">
-                    <span>{card.title}</span>
-                    <span className="text-[10px] text-[#ec4899] font-mono">Click to Run &rarr;</span>
-                  </div>
-                  <div className="text-[11px] text-[var(--text-muted)] mt-0.5 font-medium truncate">
-                    {card.prompt}
-                  </div>
+                  <p className="font-bold text-[var(--text-primary)] mb-1 group-hover:text-indigo-500 transition-colors">
+                    {sample.title}
+                  </p>
+                  <p className="text-[var(--text-secondary)] truncate line-clamp-2 white-space-normal">
+                    {sample.prompt}
+                  </p>
                 </button>
               ))}
             </div>
           </div>
+        ) : (
+          messages.map((message) => (
+            <div
+              key={message.id}
+              className={`flex w-full ${message.role === 'user' ? 'justify-end' : 'justify-start'} animate-in slide-in-from-bottom-2 fade-in duration-300`}
+            >
+              <div
+                className={`flex gap-3 max-w-[85%] md:max-w-[75%] ${
+                  message.role === 'user' ? 'flex-row-reverse' : 'flex-row'
+                }`}
+              >
+                {/* Avatar */}
+                <div
+                  className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 shadow-sm mt-1 border ${
+                    message.role === 'user'
+                      ? 'bg-[var(--text-primary)] text-[var(--bg-app)] border-[var(--border-app)]'
+                      : 'bg-indigo-500/10 text-indigo-500 border-indigo-500/30'
+                  }`}
+                >
+                  {message.role === 'user' ? <User className="w-4 h-4" /> : <Bot className="w-4 h-4" />}
+                </div>
+
+                {/* Message Bubble & Tool Calls */}
+                <div className="flex flex-col gap-2 w-full">
+                  
+                  {/* Tool Call Lifecycle Rendering (FE-07) */}
+                  {message.toolInvocations?.map((toolInvocation, index) => {
+                    const toolCallId = toolInvocation.toolCallId;
+                    
+                    let mappedState: ToolState = 'input-streaming';
+                    if (toolInvocation.state === 'partial-call') mappedState = 'input-streaming';
+                    if (toolInvocation.state === 'call') mappedState = 'input-available';
+                    if (toolInvocation.state === 'result') mappedState = 'output-available';
+
+                    return (
+                      <div key={toolCallId} className="w-full">
+                        <TaskToolResultCard
+                          state={mappedState}
+                          input={toolInvocation.args as any}
+                          result={'result' in toolInvocation ? toolInvocation.result as any : undefined}
+                          error={'error' in toolInvocation ? String(toolInvocation.error) : undefined}
+                        />
+                      </div>
+                    );
+                  })}
+
+                  {/* Text Content */}
+                  {message.content && (
+                    <div
+                      className={`relative px-5 py-3.5 rounded-2xl text-[14px] leading-relaxed shadow-sm break-words whitespace-pre-wrap ${
+                        message.role === 'user'
+                          ? 'bg-[var(--text-primary)] text-[var(--bg-app)] rounded-tr-sm font-medium'
+                          : 'bg-[var(--bg-app)] border border-[var(--border-app)] text-[var(--text-primary)] rounded-tl-sm'
+                      }`}
+                    >
+                      {message.content}
+                    </div>
+                  )}
+
+                </div>
+              </div>
+            </div>
+          ))
         )}
 
-        {messages.map((msg) => (
-          <div
-            key={msg.id}
-            className={`flex gap-3 ${
-              msg.role === 'user' ? 'justify-end' : 'justify-start'
-            }`}
-          >
-            {msg.role === 'assistant' && (
-              <div className="w-8 h-8 rounded-full bg-pink-500/10 border border-pink-500/20 flex items-center justify-center text-[#ec4899] shrink-0 mt-1">
-                <Bot className="w-4 h-4" />
-              </div>
-            )}
-
-            <div
-              className={`max-w-[85%] rounded-2xl px-4 py-3 text-xs leading-relaxed space-y-3 ${
-                msg.role === 'user'
-                  ? 'bg-gradient-to-r from-[#f472b6] to-[#ec4899] text-white font-semibold rounded-br-none shadow-md'
-                  : msg.isError
-                  ? 'bg-red-950/70 border border-red-500/40 text-red-200 rounded-bl-none shadow-md'
-                  : 'bg-[var(--sub-panel-bg)] text-[var(--text-main)] border border-[var(--border-card)] rounded-bl-none shadow-sm'
-              }`}
-            >
-              {msg.toolCall && (
-                <TaskToolResultCard
-                  state={msg.toolCall.state}
-                  input={msg.toolCall.input}
-                  result={msg.toolCall.result}
-                  error={msg.toolCall.error}
-                  onRetry={() => executeChatFlow(messages[messages.length - 2]?.content || 'Generate Pomodoro plan', true)}
-                />
-              )}
-
-              {isThinking && msg.isStreaming && !msg.content && !msg.toolCall ? (
-                <div className="space-y-2 animate-pulse">
-                  <div className="flex items-center gap-2 text-[#ec4899] font-medium">
-                    <div className="flex space-x-1">
-                      <div className="w-1.5 h-1.5 bg-[#ec4899] rounded-full animate-bounce"></div>
-                      <div className="w-1.5 h-1.5 bg-[#ec4899] rounded-full animate-bounce [animation-delay:0.2s]"></div>
-                      <div className="w-1.5 h-1.5 bg-[#ec4899] rounded-full animate-bounce [animation-delay:0.4s]"></div>
-                    </div>
-                    <span>Drafting focus blocks & mindfulness recommendations...</span>
-                  </div>
-                  <div className="h-3 bg-[var(--badge-bg)] rounded w-3/4"></div>
-                  <div className="h-3 bg-[var(--badge-bg)] rounded w-1/2"></div>
-                </div>
-              ) : (
-                <div className="whitespace-pre-wrap font-sans">
-                  {msg.content}
-                  {msg.isStreaming && (
-                    <span className="inline-block w-2 h-4 ml-1 bg-[#ec4899] animate-pulse align-middle" />
-                  )}
-                </div>
-              )}
-
-              {msg.isError && (
-                <div className="pt-2 border-t border-red-500/30 flex items-center justify-between">
-                  <span className="text-[11px] text-red-300 flex items-center gap-1 font-bold">
-                    <AlertCircle className="w-3.5 h-3.5" /> Message failed to complete
-                  </span>
-                  <button
-                    onClick={() => executeChatFlow(messages[messages.length - 2]?.content || msg.content, true)}
-                    className="flex items-center gap-1.5 px-3 py-1 bg-red-500/20 hover:bg-red-500/30 text-red-300 border border-red-500/40 rounded-lg text-xs font-bold transition-all cursor-pointer"
-                  >
-                    <RefreshCw className="w-3.5 h-3.5" /> Retry Message
-                  </button>
-                </div>
-              )}
-            </div>
-
-            {msg.role === 'user' && (
-              <div className="w-8 h-8 rounded-full bg-[#ec4899] text-white flex items-center justify-center font-bold text-xs shrink-0 mt-1">
-                <User className="w-4 h-4" />
-              </div>
-            )}
-          </div>
-        ))}
-
+        {/* Scroll to bottom button */}
         {showScrollBottomBtn && (
           <button
-            onClick={() => {
-              userHasScrolledUpRef.current = false;
-              scrollToBottom(true);
-            }}
-            className="sticky bottom-2 left-1/2 -translate-x-1/2 flex items-center gap-1.5 px-3 py-1.5 bg-[#ec4899] text-white font-extrabold text-xs rounded-full shadow-lg border border-pink-400 hover:bg-pink-600 transition-all z-20 animate-bounce"
+            onClick={() => scrollToBottom(true)}
+            className="absolute bottom-6 left-1/2 -translate-x-1/2 bg-black/80 dark:bg-white/90 text-white dark:text-black p-2 rounded-full shadow-xl hover:scale-110 transition-transform z-10 border border-white/10"
+            aria-label="Scroll to bottom"
           >
-            <ArrowDown className="w-3.5 h-3.5" /> Jump to Latest
+            <ArrowDown className="w-4 h-4" />
           </button>
         )}
       </div>
 
-      <form
-        onSubmit={handleSendMessage}
-        className="p-4 border-t border-[var(--border-card)] bg-[var(--bg-app)] flex items-center gap-2"
-      >
-        <input
-          type="text"
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          placeholder={
-            isGenerating
-              ? 'Streaming response in progress...'
-              : 'Ask ZenFlow AI or type "Generate Pomodoro plan"...'
-          }
-          disabled={isGenerating}
-          className="flex-1 px-4 py-3 bg-[var(--bg-input)] border border-[var(--border-card)] rounded-xl text-[var(--text-main)] text-xs placeholder-[var(--text-muted)] focus:outline-none focus:ring-2 focus:ring-[#ec4899] disabled:opacity-50"
-        />
-
-        {isGenerating ? (
-          <button
-            type="button"
-            onClick={handleStopStream}
-            aria-label="Stop generation"
-            className="p-3 bg-red-500/20 border border-red-500/40 text-red-400 rounded-xl hover:bg-red-500/30 transition-all"
-          >
-            <Square className="w-4 h-4 fill-current" />
-          </button>
-        ) : (
-          <button
-            type="submit"
-            disabled={!input.trim()}
-            aria-label="Send message"
-            className="p-3 bg-gradient-to-r from-[#f472b6] to-[#ec4899] text-white font-bold rounded-xl hover:opacity-90 transition-all disabled:opacity-40 disabled:cursor-not-allowed shadow-md"
-          >
-            <Send className="w-4 h-4" />
-          </button>
-        )}
-      </form>
+      {/* Input Area */}
+      <div className="p-4 border-t border-[var(--border-app)] bg-[var(--bg-app)]">
+        <form
+          onSubmit={handleSubmit}
+          className="flex relative items-end gap-2 bg-[var(--bg-app)] border-2 border-[var(--border-app)] rounded-2xl p-1.5 focus-within:border-indigo-500/50 focus-within:ring-4 focus-within:ring-indigo-500/10 transition-all shadow-sm"
+        >
+          <textarea
+            value={input}
+            onChange={handleInputChange}
+            placeholder="Ask ZenFlow AI to analyze your focus sessions..."
+            className="w-full max-h-32 min-h-[44px] bg-transparent border-none focus:outline-none resize-none py-2.5 px-3 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-secondary)]/60 scrollbar-hide"
+            rows={1}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                handleSubmit(e as any);
+              }
+            }}
+          />
+          <div className="flex shrink-0 p-1">
+            {isLoading ? (
+              <button
+                type="button"
+                onClick={() => stop()}
+                className="w-9 h-9 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 text-rose-500 flex items-center justify-center transition-all border border-rose-500/20"
+                aria-label="Stop generating"
+              >
+                <Square className="w-4 h-4 fill-current" />
+              </button>
+            ) : (
+              <button
+                type="submit"
+                disabled={!input.trim()}
+                className="w-9 h-9 rounded-xl bg-indigo-500 text-white flex items-center justify-center hover:bg-indigo-600 disabled:opacity-40 disabled:hover:bg-indigo-500 transition-all shadow-md disabled:shadow-none"
+                aria-label="Send message"
+              >
+                <Send className="w-4 h-4 ml-0.5" />
+              </button>
+            )}
+          </div>
+        </form>
+        <p className="text-[10px] text-center text-[var(--text-secondary)]/60 mt-3 font-medium">
+          ZenFlow AI uses Generative UI Tool Calling. Stay focused!
+        </p>
+      </div>
     </div>
   );
 }
