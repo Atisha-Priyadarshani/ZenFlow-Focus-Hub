@@ -181,7 +181,7 @@ export function StreamingChatInterface() {
           className="flex relative items-end gap-2 bg-[var(--bg-app)] border-2 border-[var(--border-app)] rounded-2xl p-1.5 focus-within:border-indigo-500/50 focus-within:ring-4 focus-within:ring-indigo-500/10 transition-all shadow-sm"
         >
           <textarea
-            value={input}
+            value={input || ''}
             onChange={handleInputChange}
             placeholder="Ask ZenFlow AI to analyze your focus sessions..."
             className="w-full max-h-32 min-h-[44px] bg-transparent border-none focus:outline-none resize-none py-2.5 px-3 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-secondary)]/60 scrollbar-hide"
@@ -206,7 +206,7 @@ export function StreamingChatInterface() {
             ) : (
               <button
                 type="submit"
-                disabled={!input.trim()}
+                disabled={!(input || '').trim()}
                 className="w-9 h-9 rounded-xl bg-indigo-500 text-white flex items-center justify-center hover:bg-indigo-600 disabled:opacity-40 disabled:hover:bg-indigo-500 transition-all shadow-md disabled:shadow-none"
                 aria-label="Send message"
               >
