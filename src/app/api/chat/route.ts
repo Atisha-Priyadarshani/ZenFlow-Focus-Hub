@@ -36,6 +36,7 @@ export async function POST(req: NextRequest) {
       tools: {
         calculateFocusAnalysis: tool({
           description: 'Analyzes user focus sessions, current distraction level, and returns a focus health score and actionable recommendation.',
+          // @ts-expect-error - Zod version type mismatch with AI SDK
           parameters: FocusAnalysisInputSchema,
           execute: async (input) => {
             // Add an artificial delay so the user can see the "input-available" execution state
