@@ -31,71 +31,46 @@ export async function POST(req: NextRequest) {
         let aiResponseText = '';
 
         if (apiKey && apiKey !== 'your_gemini_api_key_here') {
-          try {
-            console.log('[DEBUG] Fetching available models for API key starting:', apiKey.substring(0, 6));
-            const listRes = await fetch(
-              `https://generativelanguage.googleapis.com/v1beta/models?key=${apiKey}`
-            );
+          const endpointsToTry = [
+            `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
+            `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-pro:generateContent?key=${apiKey}`,
+            `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
+            `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=${apiKey}`,
+          ];
 
-            let candidatesToTry: string[] = ['gemini-3.5-flash', 'gemini-3.6-flash', 'gemini-3.7-flash', 'gemini-2.5-flash'];
+          for (const url of endpointsToTry) {
+            try {
+              console.log(`[DEBUG] Attempting Gemini API call:`, url.substring(0, 65));
+              const response = await fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  contents: [
+                    {
+                      role: 'user',
+                      parts: [{ text: `${ZENFLOW_AI_SYSTEM_PROMPT}\n\nUser Question: ${lastMessage}` }],
+                    },
+                  ],
+                }),
+              });
 
-            if (listRes.ok) {
-              const listData = await listRes.json();
-              const discovered = (listData.models || [])
-                .map((m: any) => m.name?.replace('models/', ''))
-                .filter((name: string) => name.includes('gemini') && !name.includes('embedding') && !name.includes('imagen') && !name.includes('audio') && !name.includes('tts'));
+              console.log(`[DEBUG] HTTP status: ${response.status}`);
 
-              console.log('[DEBUG] Discovered available Gemini models:', discovered);
-              if (discovered.length > 0) {
-                candidatesToTry = [
-                  ...discovered.filter((m) => m.includes('3.5') || m.includes('3.6') || m.includes('3.7')),
-                  ...discovered,
-                ];
-              }
-            } else {
-              const listErr = await listRes.text();
-              console.error('[DEBUG] ListModels error response:', listErr);
-            }
-
-            for (const model of candidatesToTry) {
-              try {
-                console.log(`[DEBUG] Attempting generation with model: ${model}`);
-                const response = await fetch(
-                  `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`,
-                  {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                      contents: [
-                        {
-                          role: 'user',
-                          parts: [{ text: `${ZENFLOW_AI_SYSTEM_PROMPT}\n\nUser Question: ${lastMessage}` }],
-                        },
-                      ],
-                    }),
-                  }
-                );
-
-                console.log(`[DEBUG] Model ${model} HTTP status:`, response.status);
-
-                if (response.ok) {
-                  const data = await response.json();
-                  aiResponseText =
-                    data.candidates?.[0]?.content?.parts?.[0]?.text || '';
-                  if (aiResponseText) {
-                    console.log(`[DEBUG] SUCCESS with ${model}! Response length:`, aiResponseText.length);
-                    break;
-                  }
-                } else {
-                  const errBody = await response.text();
-                  console.error(`[DEBUG] Model ${model} Error Response:`, errBody);
+              if (response.ok) {
+                const data = await response.json();
+                aiResponseText =
+                  data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+                if (aiResponseText) {
+                  console.log(`[DEBUG] SUCCESS! Generated text length: ${aiResponseText.length}`);
+                  break;
                 }
-              } catch (err) {
-                console.error(`[DEBUG] Exception trying model ${model}:`, err);
+              } else {
+                const errText = await response.text();
+                console.error(`[DEBUG] API Error Response: ${errText.substring(0, 200)}`);
               }
+            } catch (err) {
+              console.error(`[DEBUG] Fetch exception:`, err);
             }
-          } catch (err) {
-            console.error('[DEBUG] Gemini API fetch exception:', err);
           }
         }
 
