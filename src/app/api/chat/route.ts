@@ -2,7 +2,7 @@ import { NextRequest } from 'next/server';
 import { streamText, tool } from 'ai';
 import { createGoogleGenerativeAI } from '@ai-sdk/google';
 import { ZENFLOW_AI_SYSTEM_PROMPT } from '@/lib/aiConfig';
-import { FocusAnalysisInputSchema, executeFocusAnalysis } from '@/lib/tools';
+import { TaskPriorityInputSchema, executeTaskPriorityAnalysis } from '@/lib/tools';
 
 export const runtime = 'nodejs';
 
@@ -34,14 +34,14 @@ export async function POST(req: NextRequest) {
       system: ZENFLOW_AI_SYSTEM_PROMPT,
       messages,
       tools: {
-        calculateFocusAnalysis: tool({
+        generatePomodoroFocusPlan: tool({
           description: 'Analyzes user focus sessions, current distraction level, and returns a focus health score and actionable recommendation.',
           // @ts-expect-error - Zod version type mismatch with AI SDK
-          parameters: FocusAnalysisInputSchema,
+          parameters: TaskPriorityInputSchema,
           execute: async (input) => {
             // Add an artificial delay so the user can see the "input-available" execution state
             await new Promise((resolve) => setTimeout(resolve, 2000));
-            return executeFocusAnalysis(input);
+            return executeTaskPriorityAnalysis(input);
           },
         }),
       },
