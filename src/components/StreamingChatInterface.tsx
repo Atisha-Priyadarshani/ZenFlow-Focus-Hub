@@ -2,11 +2,11 @@
 
 import React, { useRef, useEffect } from 'react';
 import { useChat } from '@ai-sdk/react';
-import { Send, Square, ArrowDown, Bot, User, Sparkles } from 'lucide-react';
+import { Send, Square, ArrowDown, Bot, User, Sparkles, AlertCircle, RefreshCw } from 'lucide-react';
 import { TaskToolResultCard, ToolState } from './TaskToolResultCard';
 
 export function StreamingChatInterface() {
-  const { messages, input, handleInputChange, handleSubmit, isLoading, stop, append } = useChat({
+  const { messages, input, handleInputChange, handleSubmit, isLoading, stop, append, error, reload } = useChat({
     api: '/api/chat',
   });
 
@@ -160,6 +160,30 @@ export function StreamingChatInterface() {
               </div>
             </div>
           ))
+        )}
+
+        {/* Global Error State with Retry */}
+        {error && (
+          <div className="flex w-full justify-start animate-in fade-in duration-300 mt-4">
+            <div className="flex gap-3 max-w-[85%] md:max-w-[75%]">
+              <div className="w-8 h-8 rounded-full flex items-center justify-center shrink-0 shadow-sm mt-1 border bg-rose-500/10 text-rose-500 border-rose-500/30">
+                <AlertCircle className="w-4 h-4" />
+              </div>
+              <div className="flex flex-col gap-3 w-full">
+                <div className="relative px-5 py-4 rounded-2xl text-[14px] leading-relaxed shadow-sm break-words whitespace-pre-wrap bg-rose-500/5 border border-rose-500/20 text-rose-400 font-medium">
+                  <p className="mb-2">⚠️ Connection Interrupted or API Error</p>
+                  <p className="text-xs text-rose-400/80 mb-4">{error.message}</p>
+                  <button
+                    onClick={() => reload()}
+                    className="flex items-center gap-2 px-4 py-2 bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/30 text-rose-400 rounded-lg text-xs font-bold transition-colors"
+                  >
+                    <RefreshCw className="w-3.5 h-3.5" />
+                    Retry Request
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
         )}
 
         {/* Scroll to bottom button */}
