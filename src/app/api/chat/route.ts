@@ -29,10 +29,15 @@ export async function POST(req: NextRequest) {
       },
     });
 
+    const coreMessages = messages.map((m: any) => ({
+      role: m.role,
+      content: m.content || (m.parts?.filter((p: any) => p.type === 'text').map((p: any) => p.text).join('\n') || '')
+    }));
+
     const result = streamText({
       model: google('gemini-3.5-flash-lite'),
       system: ZENFLOW_AI_SYSTEM_PROMPT,
-      messages,
+      messages: coreMessages,
       tools: {
         generatePomodoroFocusPlan: tool({
           description: 'Analyzes user focus sessions, current distraction level, and returns a focus health score and actionable recommendation.',
