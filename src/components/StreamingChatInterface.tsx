@@ -6,9 +6,10 @@ import { Send, Square, ArrowDown, Bot, User, Sparkles, AlertCircle, RefreshCw } 
 import { TaskToolResultCard, ToolState } from './TaskToolResultCard';
 
 export function StreamingChatInterface() {
-  const { messages, input, handleInputChange, handleSubmit, isLoading, stop, append, error, reload } = useChat({
+  const { messages, isLoading, stop, append, error, reload } = useChat({
     api: '/api/chat',
   });
+  const [localInput, setLocalInput] = React.useState('');
 
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const userHasScrolledUpRef = useRef(false);
@@ -201,19 +202,26 @@ export function StreamingChatInterface() {
       {/* Input Area */}
       <div className="p-4 border-t border-[var(--border-app)] bg-[var(--bg-app)]">
         <form
-          onSubmit={handleSubmit}
+          onSubmit={(e) => {
+            e.preventDefault();
+            if (!localInput.trim()) return;
+            append({ role: 'user', content: localInput });
+            setLocalInput('');
+          }}
           className="flex relative items-end gap-2 bg-[var(--bg-app)] border-2 border-[var(--border-app)] rounded-2xl p-1.5 focus-within:border-indigo-500/50 focus-within:ring-4 focus-within:ring-indigo-500/10 transition-all shadow-sm"
         >
           <textarea
-            value={input || ''}
-            onChange={handleInputChange}
+            value={localInput}
+            onChange={(e) => setLocalInput(e.target.value)}
             placeholder="Ask ZenFlow AI to analyze your focus sessions..."
             className="w-full max-h-32 min-h-[44px] bg-transparent border-none focus:outline-none resize-none py-2.5 px-3 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-secondary)]/60 scrollbar-hide"
             rows={1}
             onKeyDown={(e) => {
               if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
-                handleSubmit(e as any);
+                if (!localInput.trim()) return;
+                append({ role: 'user', content: localInput });
+                setLocalInput('');
               }
             }}
           />
@@ -230,7 +238,7 @@ export function StreamingChatInterface() {
             ) : (
               <button
                 type="submit"
-                disabled={!(input || '').trim()}
+                disabled={!localInput.trim()}
                 className="w-9 h-9 rounded-xl bg-indigo-500 text-white flex items-center justify-center hover:bg-indigo-600 disabled:opacity-40 disabled:hover:bg-indigo-500 transition-all shadow-md disabled:shadow-none"
                 aria-label="Send message"
               >
