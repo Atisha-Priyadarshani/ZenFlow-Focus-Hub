@@ -18,18 +18,9 @@ import {
   X,
 } from 'lucide-react';
 
-const MOTIVATION_QUOTES = [
-  "Discipline equals freedom.",
-  "Focus on progress, not perfection.",
-  "Small daily wins compound into greatness.",
-  "Your future self will thank you for today's effort.",
-  "Deep work creates extraordinary results.",
-  "Bloom with consistency every single day.",
-];
 
 export function Navbar() {
   const pathname = usePathname();
-  const [quoteIndex, setQuoteIndex] = useState<number>(0);
   const [themeMode, setThemeMode] = useState<'dark' | 'light'>('dark');
   const [mounted, setMounted] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -52,9 +43,6 @@ export function Navbar() {
     localStorage.setItem('zenflow_theme', nextTheme);
   };
 
-  const rotateQuote = () => {
-    setQuoteIndex((prev) => (prev + 1) % MOTIVATION_QUOTES.length);
-  };
 
   const navLinks = [
     { href: '/', label: 'Dashboard', icon: LayoutDashboard },
@@ -75,9 +63,6 @@ export function Navbar() {
           <div className="flex items-center gap-2">
             <span className="text-xl md:text-2xl font-extrabold tracking-tight text-[#be185d] dark:text-[#fbcfe8]">
               ZenFlow
-            </span>
-            <span className="hidden sm:inline-flex items-center text-[10px] font-extrabold text-[#db2777] dark:text-[#ec4899] px-2.5 py-0.5 rounded-full bg-pink-500/10 border border-pink-500/20 leading-none">
-              Focus Hub
             </span>
           </div>
         </Link>
@@ -105,15 +90,6 @@ export function Navbar() {
 
         {/* Right Section */}
         <div className="flex items-center gap-2.5">
-          <button
-            onClick={rotateQuote}
-            className="hidden xl:flex items-center gap-2 bg-[var(--bg-input)] border border-[var(--border-card)] rounded-full px-3 py-1.5 text-xs font-semibold text-[var(--text-main)] hover:border-[#ec4899] transition-all max-w-[240px] cursor-pointer"
-            title="Click to rotate motivation quote"
-          >
-            <Quote className="w-3.5 h-3.5 text-[#ec4899]" />
-            <span className="truncate">&quot;{MOTIVATION_QUOTES[quoteIndex]}&quot;</span>
-            <RefreshCw className="w-3 h-3 text-[#ec4899] opacity-75" />
-          </button>
 
           {mounted && (
             <button
