@@ -6,9 +6,9 @@ import { Send, Square, ArrowDown, Bot, User, Sparkles, AlertCircle, RefreshCw } 
 import { TaskToolResultCard, ToolState } from './TaskToolResultCard';
 
 export function StreamingChatInterface() {
-  const { messages, isLoading, stop, sendMessage, error, reload } = useChat({
-    api: '/api/chat',
-  });
+  const { messages, status, stop, sendMessage, error, regenerate } = useChat({});
+  const isLoading = status === 'submitted' || status === 'streaming';
+  const reload = regenerate;
 
   const [localInput, setLocalInput] = React.useState('');
 
@@ -110,8 +110,8 @@ export function StreamingChatInterface() {
               {sampleOnboardingPrompts.map((sample, idx) => (
                 <button
                   key={idx}
-                  onClick={() => sendMessage({ role: 'user', content: sample.prompt })}
-                  className="p-3 text-left border border-[var(--border-app)] rounded-xl hover:bg-indigo-500/10 hover:border-indigo-500/30 transition-all text-xs group"
+                  onClick={() => sendMessage({ role: 'user', parts: [{ type: 'text', text: sample.prompt }] })}
+                  className="p-3 text-left border border-[var(--border-app)] rounded-xl hover:bg-[var(--accent-primary)]/10 hover:border-[var(--accent-primary)]/30 transition-all text-xs group"
                 >
                   <p className="font-bold text-[var(--text-primary)] mb-1 group-hover:text-indigo-500 transition-colors">
                     {sample.title}
@@ -149,18 +149,15 @@ export function StreamingChatInterface() {
                 <div className="flex flex-col gap-2 w-full">
                   
                   {/* Tool Call Lifecycle Rendering (FE-07) */}
-                  {message.toolInvocations?.map((toolInvocation, index) => {
+                  {message.parts?.filter(p => p.type.startsWith('tool-') || p.type === 'tool-invocation').map((part: any, index: number) => {
+                    const toolInvocation = part.toolInvocation || part;
                     const toolCallId = toolInvocation.toolCallId;
+                    const toolState = 'result' in toolInvocation ? 'output-available' : 'input-streaming';
                     
-                    let mappedState: ToolState = 'input-streaming';
-                    if (toolInvocation.state === 'partial-call') mappedState = 'input-streaming';
-                    if (toolInvocation.state === 'call') mappedState = 'input-available';
-                    if (toolInvocation.state === 'result') mappedState = 'output-available';
-
                     return (
-                      <div key={toolCallId} className="w-full">
+                      <div key={toolCallId || index} className="w-full">
                         <TaskToolResultCard
-                          state={mappedState}
+                          state={toolState as ToolState}
                           input={toolInvocation.args as any}
                           result={'result' in toolInvocation ? toolInvocation.result as any : undefined}
                           error={'error' in toolInvocation ? String(toolInvocation.error) : undefined}
@@ -170,7 +167,7 @@ export function StreamingChatInterface() {
                   })}
 
                   {/* Text Content */}
-                  {message.content && (
+                  {message.parts?.filter(p => p.type === 'text').length > 0 && (
                     <div
                       className={`relative px-5 py-3.5 rounded-2xl text-[14px] leading-relaxed shadow-sm break-words whitespace-pre-wrap ${
                         message.role === 'user'
@@ -178,7 +175,7 @@ export function StreamingChatInterface() {
                           : 'bg-[var(--bg-app)] border border-[var(--border-app)] text-[var(--text-primary)] rounded-tl-sm'
                       }`}
                     >
-                      {message.content}
+                      {message.parts?.filter(p => p.type === 'text').map(p => p.text).join('\n')}
                     </div>
                   )}
 
@@ -230,7 +227,7 @@ export function StreamingChatInterface() {
           onSubmit={(e) => {
             e.preventDefault();
             if (!localInput.trim()) return;
-            sendMessage({ role: 'user', content: localInput.trim() });
+            sendMessage({ role: 'user', parts: [{ type: 'text', text: localInput.trim() }] });
             setLocalInput('');
           }}
           className="flex relative items-end gap-2 bg-[var(--bg-app)] border-2 border-[var(--border-app)] rounded-2xl p-1.5 focus-within:border-indigo-500/50 focus-within:ring-4 focus-within:ring-indigo-500/10 transition-all shadow-sm"
@@ -245,7 +242,7 @@ export function StreamingChatInterface() {
               if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
                 if (!localInput.trim()) return;
-                sendMessage({ role: 'user', content: localInput.trim() });
+                sendMessage({ role: 'user', parts: [{ type: 'text', text: localInput.trim() }] });
                 setLocalInput('');
               }
             }}

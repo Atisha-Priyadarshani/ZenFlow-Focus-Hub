@@ -36,14 +36,13 @@ export async function POST(req: NextRequest) {
       tools: {
         generatePomodoroFocusPlan: tool({
           description: 'Analyzes user focus sessions, current distraction level, and returns a focus health score and actionable recommendation.',
-          // @ts-expect-error - Zod version type mismatch with AI SDK
           parameters: TaskPriorityInputSchema,
-          execute: async (input) => {
+          execute: async (input: any) => {
             // Add an artificial delay so the user can see the "input-available" execution state
             await new Promise((resolve) => setTimeout(resolve, 2000));
             return executeTaskPriorityAnalysis(input);
           },
-        }),
+        } as any),
       },
       onError: ({ error }) => {
         console.error('[DEBUG] Internal streamText error:', error);
