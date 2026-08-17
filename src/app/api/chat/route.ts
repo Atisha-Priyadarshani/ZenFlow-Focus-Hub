@@ -30,7 +30,7 @@ export async function POST(req: NextRequest) {
     });
 
     const result = streamText({
-      model: google('gemini-1.5-flash'),
+      model: google('gemini-3.5-flash-lite'),
       system: ZENFLOW_AI_SYSTEM_PROMPT,
       messages,
       tools: {
@@ -45,8 +45,11 @@ export async function POST(req: NextRequest) {
           },
         }),
       },
+      onError: ({ error }) => {
+        console.error('[DEBUG] Internal streamText error:', error);
+      }
     });
-    return result.toDataStreamResponse();
+    return result.toUIMessageStreamResponse();
   } catch (error) {
     console.error('[DEBUG] streamText error:', error);
     return new Response(JSON.stringify({ error: 'Failed to process streaming chat' }), {

@@ -6,11 +6,27 @@ import { Send, Square, ArrowDown, Bot, User, Sparkles, AlertCircle, RefreshCw } 
 import { TaskToolResultCard, ToolState } from './TaskToolResultCard';
 
 export function StreamingChatInterface() {
-  const { messages, isLoading, stop, append, error, reload } = useChat({
+  const { messages, isLoading, stop, sendMessage, error, reload } = useChat({
     api: '/api/chat',
   });
 
   const [localInput, setLocalInput] = React.useState('');
+
+  const [debugError, setDebugError] = React.useState<string | null>(null);
+
+  React.useEffect(() => {
+    const origError = console.error;
+    console.error = (...args) => {
+      setDebugError(args.map(a => String(a)).join(' '));
+      origError(...args);
+    };
+    window.addEventListener('unhandledrejection', (e) => {
+      setDebugError(String(e.reason));
+    });
+    window.addEventListener('error', (e) => {
+      setDebugError(String(e.message));
+    });
+  }, []);
 
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const userHasScrolledUpRef = useRef(false);
@@ -70,6 +86,14 @@ export function StreamingChatInterface() {
         </div>
       </div>
 
+      {/* Debug Error Overlay */}
+      {debugError && (
+        <div className="absolute top-0 left-0 w-full bg-red-600 text-white p-4 z-50 text-xs font-mono whitespace-pre-wrap break-words">
+          <strong>DEBUG ERROR:</strong> {debugError}
+          <button className="ml-4 underline" onClick={() => setDebugError(null)}>Dismiss</button>
+        </div>
+      )}
+
       {/* Chat History Area */}
       <div
         ref={scrollContainerRef}
@@ -86,7 +110,7 @@ export function StreamingChatInterface() {
               {sampleOnboardingPrompts.map((sample, idx) => (
                 <button
                   key={idx}
-                  onClick={() => append({ role: 'user', content: sample.prompt })}
+                  onClick={() => sendMessage({ role: 'user', content: sample.prompt })}
                   className="p-3 text-left border border-[var(--border-app)] rounded-xl hover:bg-indigo-500/10 hover:border-indigo-500/30 transition-all text-xs group"
                 >
                   <p className="font-bold text-[var(--text-primary)] mb-1 group-hover:text-indigo-500 transition-colors">
@@ -206,7 +230,7 @@ export function StreamingChatInterface() {
           onSubmit={(e) => {
             e.preventDefault();
             if (!localInput.trim()) return;
-            append({ role: 'user', content: localInput.trim() });
+            sendMessage({ role: 'user', content: localInput.trim() });
             setLocalInput('');
           }}
           className="flex relative items-end gap-2 bg-[var(--bg-app)] border-2 border-[var(--border-app)] rounded-2xl p-1.5 focus-within:border-indigo-500/50 focus-within:ring-4 focus-within:ring-indigo-500/10 transition-all shadow-sm"
@@ -221,7 +245,7 @@ export function StreamingChatInterface() {
               if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
                 if (!localInput.trim()) return;
-                append({ role: 'user', content: localInput.trim() });
+                sendMessage({ role: 'user', content: localInput.trim() });
                 setLocalInput('');
               }
             }}
