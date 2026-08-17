@@ -46,7 +46,7 @@ export async function POST(req: NextRequest) {
         }),
       },
     });
-    return result.toUIMessageStreamResponse();
+    return result.toDataStreamResponse();
   } catch (error) {
     console.error('[DEBUG] streamText error:', error);
     return new Response(JSON.stringify({ error: 'Failed to process streaming chat' }), {
