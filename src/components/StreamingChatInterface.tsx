@@ -138,7 +138,7 @@ export function StreamingChatInterface() {
                 <div
                   className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 shadow-sm mt-1 border ${
                     message.role === 'user'
-                      ? 'bg-[var(--text-primary)] text-[var(--bg-app)] border-[var(--border-app)]'
+                      ? 'bg-indigo-600 text-white border-indigo-700'
                       : 'bg-indigo-500/10 text-indigo-500 border-indigo-500/30'
                   }`}
                 >
@@ -171,7 +171,7 @@ export function StreamingChatInterface() {
                     <div
                       className={`relative px-5 py-3.5 rounded-2xl text-[14px] leading-relaxed shadow-sm break-words whitespace-pre-wrap ${
                         message.role === 'user'
-                          ? 'bg-[var(--text-primary)] text-[var(--bg-app)] rounded-tr-sm font-medium'
+                          ? 'bg-indigo-600 text-white rounded-tr-sm font-medium'
                           : 'bg-[var(--bg-app)] border border-[var(--border-app)] text-[var(--text-primary)] rounded-tl-sm'
                       }`}
                     >

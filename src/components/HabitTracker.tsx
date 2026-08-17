@@ -32,6 +32,11 @@ export function HabitTracker({ onHabitCompleted }: HabitTrackerProps) {
   const [isAdding, setIsAdding] = useState(false);
   const [name, setName] = useState('');
   const [info, setInfo] = useState('');
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   useEffect(() => {
     try {
@@ -134,7 +139,11 @@ export function HabitTracker({ onHabitCompleted }: HabitTrackerProps) {
       )}
 
       <div className="scrollable-list flex-1 mt-1">
-        {sortedHabits.length === 0 ? (
+        {!isMounted ? (
+          <div className="flex items-center justify-center h-full">
+            <span className="text-xs text-[var(--text-dim)] animate-pulse">Loading habits...</span>
+          </div>
+        ) : sortedHabits.length === 0 ? (
           <p className="text-center text-xs text-[var(--text-dim)] py-6">
             No habits added yet. Click &quot;Add Habit&quot; to build your daily streak!
           </p>
