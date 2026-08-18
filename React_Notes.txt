@@ -1,0 +1,17 @@
+# Frontend Engineering Study Notes: React Fundamentals
+
+## 1. What is React?
+React is a JavaScript library for building user interfaces. It is declarative, component-based, and allows developers to build complex UIs from small, isolated pieces of code called "components."
+
+## 2. The Virtual DOM
+React uses a "Virtual DOM" (Document Object Model) to improve performance. Instead of updating the real browser DOM every time something changes (which is very slow), React updates its own lightweight Virtual DOM. It then compares the new Virtual DOM with the old one (a process called "Diffing") and only updates the specific parts of the real DOM that actually changed.
+
+## 3. State and Props
+- **State**: State is data that belongs to a specific component. If a component's state changes, the component will automatically re-render. State is private and fully controlled by the component.
+- **Props**: Short for "properties." Props are used to pass data from a parent component down to a child component. Props are read-only; a child component cannot modify the props it receives.
+
+## 4. The useEffect Hook
+The `useEffect` hook lets you perform side effects in function components. Common examples of side effects include fetching data from an API, manually changing the DOM, or setting up a subscription. It runs after the initial render and after every update, unless you provide a dependency array to restrict when it runs.
+
+## 5. Next.js vs React
+While React is a UI library, Next.js is a full React *framework*. Next.js adds essential production features on top of React, such as Server-Side Rendering (SSR), Static Site Generation (SSG), file-based routing, and built-in API routes.
