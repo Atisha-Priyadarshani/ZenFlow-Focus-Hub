@@ -233,6 +233,7 @@ export function StreamingChatInterface() {
           className="flex relative items-end gap-2 bg-[var(--bg-app)] border-2 border-[var(--border-app)] rounded-2xl p-1.5 focus-within:border-indigo-500/50 focus-within:ring-4 focus-within:ring-indigo-500/10 transition-all shadow-sm"
         >
           <textarea
+            aria-label="Message AI"
             value={localInput}
             onChange={(e) => setLocalInput(e.target.value)}
             placeholder="Ask ZenFlow AI to analyze your focus sessions..."
